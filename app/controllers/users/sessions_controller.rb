@@ -5,12 +5,15 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(_resource, _opts = {})
+    cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
     render json: {
       message: 'You are logged in.',
       user: current_user ,
-      role: current_user.role 
-
-    }, status: :ok
+      role: current_user.role  ,
+      id: current_user.id  ,
+      avatar: cover_url 
+    #  methods: [:user_image_url] 
+    }, status: :ok  
   end
 
   def respond_to_on_destroy

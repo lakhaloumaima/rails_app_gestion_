@@ -2,6 +2,10 @@
 class MembersController < ApplicationController
     before_action :authenticate_user!
   
+    def index 
+      render 'hello'
+    end
+
     def show
       user = get_user_from_token
       render json: {
