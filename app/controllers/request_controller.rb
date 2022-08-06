@@ -34,7 +34,7 @@ class RequestController < ApplicationController
     # demande modifiée par l ' admin
     def update
         @request = Request.find(params[:id])
-        if @request.update(post_params2)
+        if @request.update(post_params3)
         render json: @request , include: [ :user ] 
 
         else
@@ -43,20 +43,22 @@ class RequestController < ApplicationController
     end
 
     # request suprimée par l ' admin
-    def destroy
+    def destroyR
         @request = Request.find(params[:id])
         @request.destroy
     end
 
-    def getEmployeesByName
-        employees = User.where(last_name: params[:last_name])
-        render json: employees
-    end
+
+
     
     def getRequestsByID
         requests = Request.where(user_id: params[:user_id])
         render json: requests , include: [ :user ] 
     end
+
+
+
+        
 
 
     private
@@ -70,5 +72,11 @@ class RequestController < ApplicationController
         # lazm tbaath kol shy fl update 
         params.permit( :status, :start_date, :end_date,:motif_accepted , :motif_refused, :user_id  )
     end
+
+    def post_params3
+        # lazm tbaath kol shy fl update 
+        params.permit( :status, :motif_refused, :user_id  )
+    end
+
 
 end

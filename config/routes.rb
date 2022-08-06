@@ -15,27 +15,18 @@ Rails.application.routes.draw do
 
   # devise_for :users, except: ['sessions#new' 'registrations#confirm_email']
 
-  resources :registrations, only: %i[ confirm_email] do
+  resources :employee , only: %i[ confirm_email] do
     member do
       get :confirm_email
     end
   end
- 
-  get '/member-data', to: 'members#show'
-
-  get 'employees' , to: 'admin#getAllEmployees'
-  
-  get 'countall' , to: 'admin#countAll'
-
-  delete 'employees/:id' , to: 'admin#destroy'
 
   post 'auth' , to: 'auth#create'
 
- # post 'createEmployee' , to: 'admin#create'
 
   delete 'logout' , to: 'auth#destroy'
 
-  #   requests 
+  # ##################################################  requests  ###############################################
   get 'requests' , to: 'request#index'
   
   get 'requests/:last_name' , to: 'request#getEmployeesByName'
@@ -44,16 +35,32 @@ Rails.application.routes.draw do
 
   post 'requests' , to: 'request#create'
 
-  delete 'requests/:id' , to: 'request#destroy'
+  delete 'requests/:id' , to: 'request#destroyR'
 
   patch 'requests/:id' , to: 'request#update'
 
-  
+ # ##################################################  employees  ###############################################
+
   patch 'updateimguser/:id' , to: 'employee#updateimageuser'
 
   patch 'updateuser/:id' , to: 'employee#updateuser'
 
+  get 'employees' , to: 'employee#getAllEmployees'
+  
+  get 'countall' , to: 'employee#countAll'
+
+  delete 'employees/:id' , to: 'employee#destroyE'
+
+
+  post 'createEmployee' , to: 'employee#createEmployee'
+
+
+  # ##################################################  members  ###############################################
+  get '/member-data', to: 'members#show'
   root 'members#index'
+
+
+
 
   
 
