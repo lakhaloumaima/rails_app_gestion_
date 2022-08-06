@@ -8,10 +8,14 @@ Rails.application.routes.draw do
   devise_for :users,
              controllers: {
                sessions: 'users/sessions',
-               registrations: 'users/registrations' 
+               registrations: 'users/registrations' ,
+               passwords: 'users/passwords'
                
               
              } 
+  devise_scope :user do
+    post "users/reset_password" => "users/registrations#reset_password", as: 'reset_password'
+  end
 
   # devise_for :users, except: ['sessions#new' 'registrations#confirm_email']
 
@@ -40,6 +44,14 @@ Rails.application.routes.draw do
   patch 'requests/:id' , to: 'request#update'
 
   patch 'updateRequestByEmployee/:id' , to: 'request#updateRequestByEmployee'
+
+  get 'getrequestacceptedbyemployee' , to: 'request#getrequestacceptedbyemployee'
+  
+  get 'getrequestinprogressbyemployee' , to: 'request#getrequestinprogressbyemployee'
+  
+  get 'getrequestrefusedbyemployee' , to: 'request#getrequestrefusedbyemployee'
+
+  get 'getrequestdata/:id' , to: 'request#getrequestdata'
 
  # ##################################################  employees  ###############################################
 

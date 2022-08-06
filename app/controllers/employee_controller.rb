@@ -25,20 +25,18 @@ class EmployeeController < ApplicationController
   # employee crée par l ' admin
   def createEmployee     
 
-   
     @employee = User.new(post_params1)
-    cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+  #  cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
   
     if @employee.save 
 
-     
       UserMailer.registration_confirmation(@employee).deliver
 
       render json: {
      
-        employee: @employee  ,
+        employee: @employee  
       
-        avatar: cover_url 
+      #  avatar: cover_url 
       #  methods: [:user_image_url] 
       }, status: :ok 
     #  render json:  @employee 

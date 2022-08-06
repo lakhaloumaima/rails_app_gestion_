@@ -16,7 +16,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def register_success
    
-    user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'default.jpeg', content_type: 'image/jpeg')
+  #  user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'default.jpeg', content_type: 'image/jpeg')
     
     render json: {
       message: 'Signed up sucessfully.',

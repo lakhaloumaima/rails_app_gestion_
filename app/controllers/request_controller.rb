@@ -64,16 +64,45 @@ class RequestController < ApplicationController
         end
     end
 
+    def getrequestinprogressbyemployee
+        
+        @request = Request.where("status = ?" , status = 0 )
+    
+        render json:  @request   , include: [ :user ] 
+    end
+
+    def getrequestacceptedbyemployee
+        
+        @request = Request.where("status = ?" , status = 1 )
+    
+        render json:  @request   , include: [ :user ] 
+    end
+
+    def getrequestrefusedbyemployee
+        
+        @request = Request.where("status = ?" , status = 2 )
+    
+        render json:  @request   , include: [ :user ] 
+    end
+
+
+    def getrequestdata
+        @request = Request.where(id: params[:id])
+        render json: @request , include: [ :user ]
+    end
+
+
+
 
     private
 
     def post_params
-        params.permit(:status, :start_date, :end_date, :motif_accepted , :motif_refused, :user_id )
+        params.permit(:status, :start_date, :end_date, :reason , :motif_refused, :user_id )
         
     end
 
     def post_params2
-        params.permit( :status, :start_date, :end_date,:motif_accepted , :motif_refused, :user_id  )
+        params.permit( :status, :start_date, :end_date,:reason , :motif_refused, :user_id  )
     end
 
     def post_params3
@@ -81,7 +110,7 @@ class RequestController < ApplicationController
     end
 
     def post_params4
-        params.permit( :start_date, :end_date,:motif_accepted )
+        params.permit( :start_date, :end_date , :reason )
     end
 
 
