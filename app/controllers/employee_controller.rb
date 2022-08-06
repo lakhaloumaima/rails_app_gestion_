@@ -36,7 +36,7 @@ class EmployeeController < ApplicationController
 
       render json: {
      
-        employee : @employee  ,
+        employee: @employee  ,
       
         avatar: cover_url 
       #  methods: [:user_image_url] 

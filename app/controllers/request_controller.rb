@@ -47,18 +47,22 @@ class RequestController < ApplicationController
         @request = Request.find(params[:id])
         @request.destroy
     end
-
-
-
-    
+ 
     def getRequestsByID
         requests = Request.where(user_id: params[:user_id])
         render json: requests , include: [ :user ] 
     end
 
+    # request updated by employee
+    def updateRequestByEmployee
+        @request = Request.find(params[:id])
+        if @request.update(post_params4)
+        render json: @request , include: [ :user ] 
 
-
-        
+        else
+        render json: @request.errors, statut: :unprocessable_entity
+        end
+    end
 
 
     private
@@ -69,13 +73,15 @@ class RequestController < ApplicationController
     end
 
     def post_params2
-        # lazm tbaath kol shy fl update 
         params.permit( :status, :start_date, :end_date,:motif_accepted , :motif_refused, :user_id  )
     end
 
     def post_params3
-        # lazm tbaath kol shy fl update 
         params.permit( :status, :motif_refused, :user_id  )
+    end
+
+    def post_params4
+        params.permit( :start_date, :end_date,:motif_accepted )
     end
 
 

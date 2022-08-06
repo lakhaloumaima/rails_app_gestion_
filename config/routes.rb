@@ -39,6 +39,8 @@ Rails.application.routes.draw do
 
   patch 'requests/:id' , to: 'request#update'
 
+  patch 'updateRequestByEmployee/:id' , to: 'request#updateRequestByEmployee'
+
  # ##################################################  employees  ###############################################
 
   patch 'updateimguser/:id' , to: 'employee#updateimageuser'
