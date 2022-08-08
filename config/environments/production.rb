@@ -65,6 +65,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "Freelancy_back_production"
 
+  
   config.action_mailer.perform_caching = false
   config.action_mailer.delivery_method = :smtp
   host = 'localhost:3000' #replace with your own url

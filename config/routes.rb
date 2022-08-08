@@ -55,6 +55,8 @@ Rails.application.routes.draw do
 
  # ##################################################  employees  ###############################################
 
+  get 'getemployeedata/:id' , to: 'employee#getemployedata'
+
   patch 'updateimguser/:id' , to: 'employee#updateimageuser'
 
   patch 'updateuser/:id' , to: 'employee#updateuser'

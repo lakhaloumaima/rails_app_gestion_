@@ -26,33 +26,44 @@ class EmployeeController < ApplicationController
   def createEmployee     
 
     @employee = User.new(post_params1)
-  #  cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+    # cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
   
-    if @employee.save 
+      if @employee.save 
 
-      UserMailer.registration_confirmation(@employee).deliver
+        UserMailer.registration_confirmation(@employee).deliver
+        @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
 
-      render json: {
-     
-        employee: @employee  
+        render json: {
       
-      #  avatar: cover_url 
-      #  methods: [:user_image_url] 
-      }, status: :ok 
-    #  render json:  @employee 
-      
-    else
-        render json: @employee.errors
-    end      
+          employee: @employee  
+        
+        #  avatar: cover_url 
+        #  methods: [:user_image_url] 
+        }, status: :ok 
+      #  render json:  @employee 
+        
+      else
+          render json: @employee.errors
+      end      
   end   
 
 
   def updateuser
     @user = User.find(params[:id])
 
+    cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
+    av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+
     if @user.update(post_paramsEmployee )
 
-      render json: @user 
+       render json:  { 
+       
+        role: @user.role  ,
+        id: @user.id  ,
+        user: @user ,
+        avatar: cover_url  ,
+        avv: av  
+      }
 
     else
       render json: @user.errors, statut: :unprocessable_entity
@@ -62,9 +73,15 @@ class EmployeeController < ApplicationController
       #liste des employees consultée par l ' admin
   def getAllEmployees
     @employees = User.where(role: '1' ).paginate(:page => params[:page], :per_page => 10).order('id DESC')
+    
     render json: @employees 
     
     #   @demandes = Demande.paginate(:page => params[:page], :per_page => 10)
+  end
+
+  def getemployedata
+    @user = User.where(id: params[:id])
+    render json: @user 
   end
 
   def getEmployeesByName
@@ -74,11 +91,20 @@ class EmployeeController < ApplicationController
 
 
   def updateimageuser
-    user = User.find(params[:id])
-    cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
-
+    @user = User.find(params[:id])
+   
     if @user.update(paramsimageuser)
-      render json:   cover_url 
+      cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
+      av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+
+      render json:  { 
+       
+        role: @user.role  ,
+        id: @user.id  ,
+        user: @user ,
+        avatar: cover_url  ,
+        avv: av  
+      }
     
 
     else
@@ -116,7 +142,7 @@ class EmployeeController < ApplicationController
   end
 
   def post_paramsEmployee
-    params.permit( :email, :last_name, :first_name, :address, :phone)
+    params.permit( :email, :last_name, :first_name, :address, :phone , :password )
   end
 
   def post_params1

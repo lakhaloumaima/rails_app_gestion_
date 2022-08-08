@@ -7,7 +7,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def respond_with(resource, _opts = {})
 
   #  UserMailer.registration_confirmation(resource).deliver
-  
+    user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+    
     register_success && return if resource.persisted?
 
     register_failed
