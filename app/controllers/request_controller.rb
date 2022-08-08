@@ -4,7 +4,7 @@ class RequestController < ApplicationController
 
     #liste des demandes consultée par l ' admin
     def index
-        @requests = Request.all.paginate(:page => params[:page], :per_page => 10).order('id DESC')
+        @requests = Request.all.paginate(:page => params[:page], :per_page => 10).order('created_at DESC')
         render json: @requests  , include: [ :user  ]
 
         #   @request = Request.paginate(:page => params[:page], :per_page => 10)
@@ -49,7 +49,7 @@ class RequestController < ApplicationController
     end
  
     def getRequestsByID
-        requests = Request.where(user_id: params[:user_id])
+        requests = Request.where(user_id: params[:user_id]).paginate(:page => params[:page], :per_page => 10).order('created_at DESC')
         render json: requests , include: [ :user ] 
     end
 

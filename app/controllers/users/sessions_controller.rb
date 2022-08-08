@@ -6,9 +6,7 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(_resource, _opts = {})
-   # cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
-   #cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
-  # user = current_user.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+
     cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
     av =  current_user.avatar.attached? ? url_for(current_user.avatar) : nil
 
@@ -19,7 +17,7 @@ class Users::SessionsController < Devise::SessionsController
       id: current_user.id  ,
       avatar: cover_url ,
       avv: av  
-    #  methods: [:user_image_url] 
+
     }
   end
 
@@ -38,10 +36,12 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def destroy
-    super do
-      # Turbo requires redirects be :see_other (303); so override Devise default (302)
-      return redirect_to after_sign_out_path_for(resource_name), status: :see_other, notice: I18n.t('devise.sessions.signed_out')
-    end
+    warden.authenticate!(:scope => resource_name, :recall => "#{controller_path}#failure")
+    current_user.update_column(:authentication_token, nil)
+    render :status => 200,
+    :json => { :success => true,
+    :info => t("devise.sessions.signed_out"),
+    :data => {} }
   end
 
 

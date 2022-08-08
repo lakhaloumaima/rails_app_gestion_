@@ -17,10 +17,8 @@ class User < ApplicationRecord
   
   has_one_attached :avatar, dependent: :destroy
   
-  def user_image_url
-    avatar.attached? ? url_for(avatar) : nil
-  end
 
+  ###########################################     ACTIVATE EMAIL      ################################################
   def email_activate
     self.email_confirmed = true
     self.confirm_token = nil
@@ -30,12 +28,29 @@ class User < ApplicationRecord
     self.confirm_token = SecureRandom.urlsafe_base64.to_s if confirm_token.blank?
   end
 
-  # This generates a random password reset token for the user
-  def generate_token(column)
-    begin
-      self[column] = SecureRandom.urlsafe_base64
-    end while User.exists?(column => self[column])
+  ###########################################     PASWWORD RESET      ################################################
+  def generate_password_token!
+    self.reset_password_token = generate_token
+    self.reset_password_sent_at = Time.now.utc
+    save!
   end
+  
+  def password_token_valid?
+    (self.reset_password_sent_at + 4.hours) > Time.now.utc
+  end
+  
+  def reset_password!(password)
+    self.reset_password_token = nil
+    self.password = password
+    save!
+  end
+  
+  private
+  
+  def generate_token
+    SecureRandom.hex(10)
+  end
+
 
 
 end

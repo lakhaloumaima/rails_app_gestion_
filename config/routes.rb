@@ -1,23 +1,14 @@
 Rails.application.routes.draw do
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
-
   devise_for :users,
-             controllers: {
-               sessions: 'users/sessions',
-               registrations: 'users/registrations' ,
-               passwords: 'users/passwords'
-               
-              
-             } 
-  devise_scope :user do
-    post "users/reset_password" => "users/registrations#reset_password", as: 'reset_password'
-  end
+            controllers: {
+              sessions: 'users/sessions',
+              registrations: 'users/registrations' 
+             
+                            
+            } 
 
-  # devise_for :users, except: ['sessions#new' 'registrations#confirm_email']
+
 
   resources :employee , only: %i[ confirm_email] do
     member do
@@ -25,8 +16,11 @@ Rails.application.routes.draw do
     end
   end
 
-  post 'auth' , to: 'auth#create'
+  post 'password/forgot', to: 'password_resets#forgot'
+  post 'password/reset', to: 'password_resets#reset'
+  put 'password/update', to: 'password_resets#update'
 
+  post 'auth' , to: 'auth#create'
 
   delete 'logout' , to: 'auth#destroy'
 

@@ -2,9 +2,6 @@
 class EmployeeController < ApplicationController
   #  before_action :authenticate_user!
 
-
-  # after_action :confirm_email
-
   def confirm_email
     user = User.find_by_confirm_token(params[:id])
     if user
