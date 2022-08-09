@@ -35,15 +35,6 @@ class Users::SessionsController < Devise::SessionsController
     render json: { message: 'Hmm nothing happened.' }, status: :unauthorized
   end
 
-  def destroy
-    warden.authenticate!(:scope => resource_name, :recall => "#{controller_path}#failure")
-    current_user.update_column(:authentication_token, nil)
-    render :status => 200,
-    :json => { :success => true,
-    :info => t("devise.sessions.signed_out"),
-    :data => {} }
-  end
-
 
     
 

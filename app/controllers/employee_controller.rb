@@ -67,11 +67,14 @@ class EmployeeController < ApplicationController
     end
   end
 
-      #liste des employees consultée par l ' admin
+  #liste des employees consultée par l ' admin
   def getAllEmployees
-    @employees = User.where(role: '1' ).paginate(:page => params[:page], :per_page => 10).order('id DESC')
+    @employees = User.where(role: '1' ).order('id DESC')
     
-    render json: @employees 
+    render json:  { 
+      employees:  @employees.paginate(:page => params[:page] ) 
+  
+    } 
     
     #   @demandes = Demande.paginate(:page => params[:page], :per_page => 10)
   end

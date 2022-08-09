@@ -4,8 +4,10 @@ class RequestController < ApplicationController
 
     #liste des demandes consultée par l ' admin
     def index
-        @requests = Request.all.paginate(:page => params[:page], :per_page => 10).order('created_at DESC')
-        render json: @requests  , include: [ :user  ]
+        @requests = Request.all.order('created_at DESC')
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
 
         #   @request = Request.paginate(:page => params[:page], :per_page => 10)
     end
@@ -49,8 +51,10 @@ class RequestController < ApplicationController
     end
  
     def getRequestsByID
-        requests = Request.where(user_id: params[:user_id]).paginate(:page => params[:page], :per_page => 10).order('created_at DESC')
-        render json: requests , include: [ :user ] 
+        @requests = Request.where(user_id: params[:user_id]).order('created_at DESC')
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
     end
 
     # request updated by employee
@@ -66,23 +70,29 @@ class RequestController < ApplicationController
 
     def getrequestinprogressbyemployee
         
-        @request = Request.where("status = ?" , status = 0 )
+        @requests = Request.where("status = ?" , status = 0 )
     
-        render json:  @request   , include: [ :user ] 
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
     end
 
     def getrequestacceptedbyemployee
         
-        @request = Request.where("status = ?" , status = 1 )
+        @requests = Request.where("status = ?" , status = 1 )
     
-        render json:  @request   , include: [ :user ] 
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
     end
 
     def getrequestrefusedbyemployee
         
-        @request = Request.where("status = ?" , status = 2 )
+        @requests = Request.where("status = ?" , status = 2 )
     
-        render json:  @request   , include: [ :user ] 
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
     end
 
 

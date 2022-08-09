@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include Rails.application.routes.url_helpers
+  
 
   before_create :confirmation_token
   # Include default devise modules. Others available are:
