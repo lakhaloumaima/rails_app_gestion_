@@ -5,20 +5,30 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private
 
   def respond_with(resource, _opts = {})
+
+  #  UserMailer.registration_confirmation(resource).deliver
+    user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+    
     register_success && return if resource.persisted?
 
     register_failed
+
   end
 
   def register_success
+   
+  #  user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'default.jpeg', content_type: 'image/jpeg')
+    
     render json: {
       message: 'Signed up sucessfully.',
-      user: current_user ,
+      #user: current_user ,
+     
       status: 200 ,
-    }, status: :ok
+    }, status: :ok 
   end
 
   def register_failed
     render json: { message: 'Something went wrong.' }, status: :unprocessable_entity
   end
+  
 end
