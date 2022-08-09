@@ -37,7 +37,8 @@ class RequestController < ApplicationController
     def update
         @request = Request.find(params[:id])
         if @request.update(post_params3)
-        render json: @request , include: [ :user ] 
+            @userrequest = User.where(id: @request.user_id).update(post_params33 )
+        render json: @request , include: [ :user ]
 
         else
         render json: @request.errors, statut: :unprocessable_entity
@@ -116,7 +117,11 @@ class RequestController < ApplicationController
     end
 
     def post_params3
-        params.permit( :status, :motif_refused, :user_id  )
+        params.permit( :status, :motif_refused, :user_id , users:  [:solde] )
+    end
+
+    def post_params33
+        params.permit( :solde )
     end
 
     def post_params4
