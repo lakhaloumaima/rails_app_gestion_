@@ -67,7 +67,9 @@ Rails.application.routes.draw do
 
   # ##################################################  members  ###############################################
   get '/member-data', to: 'members#show'
-  root 'members#index'
+  root 'members#index'                   
+
+  
 
 
 
