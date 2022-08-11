@@ -35,6 +35,7 @@ Rails.application.configure do
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
+  config.assets.js_compressor = Uglifier.new(:harmony => true)
 
   config.action_mailer.perform_caching = false
   config.action_mailer.delivery_method = :smtp
