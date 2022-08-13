@@ -15,8 +15,6 @@ gem "puma", "~> 5.0"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 
-gem 'devise-jwt'
-
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 gem 'pry', '~> 0.13.1'
