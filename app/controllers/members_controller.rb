@@ -3,7 +3,7 @@ class MembersController < ApplicationController
    # before_action :authenticate_user!
   
     def index 
-      render 'hello'
+      render json: {success: 'hello '} 
     end
 
   
