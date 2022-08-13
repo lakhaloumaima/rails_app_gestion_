@@ -67,7 +67,10 @@ Rails.application.routes.draw do
 
   # ##################################################  members  ###############################################
 
-  root 'members#index'
+  root 'members#index'                
+
+  
+
 
 
 
