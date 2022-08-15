@@ -6,8 +6,7 @@ Rails.application.routes.draw do
               registrations: 'users/registrations' 
              
                             
-            } 
-
+            }
 
 
   resources :employee , only: %i[ confirm_email] do
@@ -66,7 +65,7 @@ Rails.application.routes.draw do
 
 
   # ##################################################  members  ###############################################
-  get '/member-data', to: 'members#show'
+
   root 'members#index'                   
 
   

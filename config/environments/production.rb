@@ -24,34 +24,11 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-  
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
-  end
-
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
-  config.action_mailer.perform_caching = false
-  config.action_mailer.delivery_method = :smtp
-  host = 'localhost:3000' #replace with your own url
-  config.action_mailer.default_url_options = { host: host }
-  # SMTP settings for gmail
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => "lakhalouma6@gmail.com",
-    :password             => "jsytyegtmvbncdqi",
-    :authentication       => "plain",
-    :enable_starttls_auto => true
-  }
-
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
-
-  config.assets.js_compressor = :uglifier
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
@@ -114,10 +91,3 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end
-
-
-
-
-
-
-

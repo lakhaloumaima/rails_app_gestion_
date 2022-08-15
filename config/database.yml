@@ -8,17 +8,17 @@ common: &common
  schema_search_path: "public,hstore,uuid"
 development:
  <<: *common
- database: test_back # OR your database name
+ database: gestionBack # OR your database name
 dev_it:
  <<: *common
- database: test_back # OR your database name
+ database: gestionBack # OR your database name
 staging:
  <<: *common
- database: test_back # OR your database name
+ database: gestionBack # OR your database name
 production:
  <<: *common
- database: test_back # OR your database name
+ database: gestionBack # OR your database name
 test:
  <<: *common
- database: test_back # OR your database name
+ database: gestionBack # OR your database name
  min_messages: WARNING
