@@ -61,9 +61,10 @@ Rails.application.configure do
     # Enable server timing
     config.server_timing = true
     config.action_mailer.delivery_method = :smtp
-    host = 'gestionback.herokuapp.com' #replace with your own url
+    host = 'gestionback.herokuapp.com'
     Rails.application.routes.default_url_options[:host] = 'gestionback.herokuapp.com'
     config.action_mailer.default_url_options = { host: host }
+    
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
     :address              => "smtp.gmail.com",

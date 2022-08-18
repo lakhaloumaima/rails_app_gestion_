@@ -137,10 +137,10 @@ class RequestController < ApplicationController
  
      private
  
-     def post_params
-         params.permit(:status, :start_date, :end_date, :reason , :description , :user_id )
+    def post_params
+        params.permit(:status, :start_date, :end_date, :reason , :description , :user_id )
          
-     end
+    end
  
      def post_params3
          params.permit( :status , :motif_refused , :user_id )
