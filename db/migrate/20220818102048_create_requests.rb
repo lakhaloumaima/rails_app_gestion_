@@ -6,7 +6,9 @@ class CreateRequests < ActiveRecord::Migration[7.0]
       t.date :start_date 
       t.date :end_date 
       t.string :reason
-      t.string :motif_refused
+      t.string :description , default: "" 
+      t.string :motif_refused , default: "" 
+      t.integer :days 
 
       t.timestamps
     end
