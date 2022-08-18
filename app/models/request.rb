@@ -5,7 +5,4 @@ class Request < ApplicationRecord
   enum status: [ :in_progress , :accepted  , :refused  ]
 
 
-
-
-
 end
