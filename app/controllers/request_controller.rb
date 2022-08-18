@@ -7,6 +7,7 @@ class RequestController < ApplicationController
          @requests = Request.all.order('created_at DESC')
          render json:  { 
              requests:   @requests.paginate(:page => params[:page] ) 
+             
          } , include: [ :user  ]
  
          #   @request = Request.paginate(:page => params[:page], :per_page => 10)
@@ -137,10 +138,10 @@ class RequestController < ApplicationController
  
      private
  
-     def post_params
-         params.permit(:status, :start_date, :end_date, :reason , :description , :user_id )
+    def post_params
+        params.permit(:status, :start_date, :end_date, :reason , :description , :user_id )
          
-     end
+    end
  
      def post_params3
          params.permit( :status , :motif_refused , :user_id )

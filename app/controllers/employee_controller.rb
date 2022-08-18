@@ -8,9 +8,9 @@ class EmployeeController < ApplicationController
       user.email_confirmed = true
       user.confirm_token = nil
       user.save
-      redirect_to 'http://localhost:4200/'
+     # redirect_to 'http://localhost:4200/'
 
-     # redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true 
+      redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true 
     else
       
       render json: { status: 500 }
