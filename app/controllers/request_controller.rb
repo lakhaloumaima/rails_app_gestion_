@@ -7,6 +7,7 @@ class RequestController < ApplicationController
          @requests = Request.all.order('created_at DESC')
          render json:  { 
              requests:   @requests.paginate(:page => params[:page] ) 
+             
          } , include: [ :user  ]
  
          #   @request = Request.paginate(:page => params[:page], :per_page => 10)
