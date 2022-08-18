@@ -42,12 +42,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_05_122018) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "jwt_denylist", force: :cascade do |t|
-    t.string "jti", null: false
-    t.datetime "exp", precision: nil, null: false
-    t.index ["jti"], name: "index_jwt_denylist_on_jti"
-  end
-
   create_table "requests", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.date "start_date"
