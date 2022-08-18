@@ -85,13 +85,17 @@ class RequestController < ApplicationController
  
     # request updated by employee
     def updateRequestByEmployee
-         @request = Request.find(params[:id])
-         if @request.update(post_params4)
-         render json: @request , include: [ :user ] 
+        @request = Request.find(params[:id])
+
+        days= ( ( @request.end_date.to_date - @request.start_date.to_date ).to_i) + 1
+        @request.update_attribute( :days , days )
+
+        if @request.update(post_params4)
+            render json: @request , include: [ :user ] 
  
-         else
-         render json: @request.errors, statut: :unprocessable_entity
-         end
+        else
+            render json: @request.errors, statut: :unprocessable_entity
+        end
     end
  
     def getrequestinprogressbyemployee
@@ -133,7 +137,7 @@ class RequestController < ApplicationController
     private
  
     def post_params
-        params.permit(:status, :start_date, :end_date, :reason , :motif_refused, :user_id )
+        params.permit(:status, :start_date, :end_date, :reason , :description , :motif_refused, :user_id )
          
     end
  
@@ -150,7 +154,7 @@ class RequestController < ApplicationController
     end
  
     def post_params4
-        params.permit( :start_date, :end_date , :reason )
+        params.permit( :start_date, :end_date , :reason , :description )
     end
  
  
