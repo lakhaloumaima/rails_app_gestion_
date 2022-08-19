@@ -84,9 +84,9 @@ class EmployeeController < ApplicationController
     render json: @user 
   end
 
-  def getEmployeesByName
-    employees = User.where(last_name: params[:last_name])
-    render json: employees
+  def getEmployeeByEmail
+    employee = User.where(email: params[:email])
+    render json: employee
   end
 
 

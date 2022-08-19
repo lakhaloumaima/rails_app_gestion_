@@ -47,6 +47,8 @@ Rails.application.routes.draw do
 
   get 'getrequestdata/:id' , to: 'request#getrequestdata'
 
+  get 'getRequestByEmail/:email' , to: 'request#getRequestByEmail'
+
  # ##################################################  employees  ###############################################
 
   get 'getemployeedata/:id' , to: 'employee#getemployedata'
@@ -61,8 +63,9 @@ Rails.application.routes.draw do
 
   delete 'employees/:id' , to: 'employee#destroyE'
 
-
   post 'createEmployee' , to: 'employee#createEmployee'
+
+  get 'getEmployeeByEmail/:email' , to: 'employee#getEmployeeByEmail'
 
 
   # ##################################################  members  ###############################################
