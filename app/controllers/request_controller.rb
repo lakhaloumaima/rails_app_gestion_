@@ -128,13 +128,18 @@ class RequestController < ApplicationController
      end
  
  
-     def getrequestdata
-         @request = Request.where(id: params[:id])
-         render json: @request , include: [ :user ]
-     end
+    def getrequestdata
+        @request = Request.where(id: params[:id])
+        render json: @request , include: [ :user ]
+    end
  
  
- 
+    def getRequestByEmail
+        requests = Request.joins(:users).where(email: params[:email])
+        render json:  { 
+            requests:   @requests
+        } , include: [ :user  ]
+    end
  
      private
  
