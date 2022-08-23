@@ -1,55 +1,53 @@
 class RequestController < ApplicationController
-
-    # before_action :verify_authenticity_token
  
-     #liste des demandes consultée par l ' admin
-     def index
-         @requests = Request.all.order('created_at DESC')
-         render json:  { 
-             requests:   @requests.paginate(:page => params[:page] ) 
+    #liste des demandes consultée par l ' admin
+    def index
+        @requests = Request.all.order('created_at DESC')
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
              
-         } , include: [ :user  ]
+        } , include: [ :user  ]
  
-         #   @request = Request.paginate(:page => params[:page], :per_page => 10)
-     end
+        #   @request = Request.paginate(:page => params[:page], :per_page => 10)
+    end
  
-     # request crée par l ' employee
-     def create 
+    # request crée par l ' employee
+    def create 
          
-         @request = Request.new(post_params)
+        @request = Request.new(post_params)
  
-         days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
-         @request.update( :days => days )
+        days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
+        @request.update( :days => days )
  
     
-         if @request.save 
+        if @request.save 
              
-             render json: @request , include: [ :user ]
+            render json: @request , include: [ :user ]
         
-         else
-             render json: @request.errors
-         end      
-     end     
+        else
+            render json: @request.errors
+        end      
+    end     
  
-     # request cherchée par l ' admin par ID :
-     def show
-         @request = Request.find(params[:id])
-         render json: @request
+    # request cherchée par l ' admin par ID :
+    def show
+        @request = Request.find(params[:id])
+        render json: @request
          
-     end
+    end
  
-     # demande modifiée par l ' admin
-     def update
+    # demande modifiée par l ' admin
+    def update
  
-         @request = Request.find(params[:id])
+        @request = Request.find(params[:id])
  
-         if post_params3[:status] == "in_progress" || post_params3[:status] == "refused"
+        if post_params3[:status] == "in_progress" || post_params3[:status] == "refused"
  
-             @request.update(post_params3)
+            @request.update(post_params3)
  
-             render json: @request , include: [ :user ]
+            render json: @request , include: [ :user ]
  
-         elsif post_params3[:status] == "accepted"
+        elsif post_params3[:status] == "accepted"
  
            @user = User.where("id = ?" ,  @request.user_id )   
            solde = @user.pluck( :solde ).join(',').to_i  
@@ -63,69 +61,69 @@ class RequestController < ApplicationController
           
            render json: @request, include: [  :user  ]
  
-         else
+        else
            render json: @request.errors, statut: :unprocessable_entity
-         end
+        end
  
-       end
+    end
  
  
-     # request suprimée par l ' admin
-     def destroyR
-         @request = Request.find(params[:id])
-         @request.destroy
-     end
+    # request suprimée par l ' admin
+    def destroyR
+        @request = Request.find(params[:id])
+        @request.destroy
+    end
   
-     def getRequestsByID
-         @requests = Request.where(user_id: params[:user_id]).order('created_at DESC')
-         render json:  { 
-             requests:   @requests.paginate(:page => params[:page] ) 
-         } , include: [ :user  ]
-     end
+    def getRequestsByID
+        @requests = Request.where(user_id: params[:user_id]).order('created_at DESC')
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
+    end
  
-     # request updated by employee
-     def updateRequestByEmployee
-         @request = Request.find(params[:id])
+    # request updated by employee
+    def updateRequestByEmployee
+        @request = Request.find(params[:id])
  
-         days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
+        days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
  
-         if @request.update(post_params4)
+        if @request.update(post_params4)
             
-             @request.update( :days => days )
+            @request.update( :days => days )
  
-             render json: @request , include: [ :user ] 
+            render json: @request , include: [ :user ] 
  
-         else
-             render json: @request.errors, statut: :unprocessable_entity
-         end
-     end
+        else
+            render json: @request.errors, statut: :unprocessable_entity
+        end
+    end
  
-     def getrequestinprogressbyemployee
+    def getrequestinprogressbyemployee
          
-         @requests = Request.where("status = ?" , status = 0 )
+        @requests = Request.where("status = ?" , status = 0 )
      
-         render json:  { 
-             requests:   @requests.paginate(:page => params[:page] ) 
-         } , include: [ :user  ]
-     end
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
+    end
  
-     def getrequestacceptedbyemployee
+    def getrequestacceptedbyemployee
          
-         @requests = Request.where("status = ?" , status = 1 )
+        @requests = Request.where("status = ?" , status = 1 )
      
-         render json:  { 
-             requests:   @requests.paginate(:page => params[:page] ) 
-         } , include: [ :user  ]
-     end
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
+    end
  
-     def getrequestrefusedbyemployee
+    def getrequestrefusedbyemployee
          
-         @requests = Request.where("status = ?" , status = 2 )
+        @requests = Request.where("status = ?" , status = 2 )
      
-         render json:  { 
-             requests:   @requests.paginate(:page => params[:page] ) 
-         } , include: [ :user  ]
-     end
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
+    end
  
  
     def getrequestdata
@@ -141,20 +139,20 @@ class RequestController < ApplicationController
         } , include: [ :user  ]
     end
  
-     private
+    private
  
     def post_params
-        params.permit(:status, :start_date, :end_date, :reason , :description , :user_id )
+        params.permit(  :start_date, :end_date, :reason , :description , :user_id )
          
     end
  
-     def post_params3
-         params.permit( :status , :motif_refused , :user_id )
-     end
+    def post_params3
+        params.permit( :status , :motif_refused , :user_id )
+    end
  
-     def post_params4
-         params.permit( :start_date, :end_date , :reason , :description  )
-     end
+    def post_params4
+        params.permit( :start_date, :end_date , :reason , :description  )
+    end
  
  
  end
