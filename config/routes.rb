@@ -45,6 +45,9 @@ Rails.application.routes.draw do
 
   get 'getRequestByEmail/:email' , to: 'request#getRequestByEmail'
 
+  get 'getRequestsByIdAccepted/:user_id' , to: 'request#getRequestsByIDAccepted'
+
+
  # ##################################################  employees  ###############################################
 
   get 'getemployeedata/:id' , to: 'employee#getemployedata'
