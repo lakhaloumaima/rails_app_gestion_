@@ -16,10 +16,6 @@ Rails.application.routes.draw do
     end
   end
 
-  post 'password/forgot', to: 'password_resets#forgot'
-  post 'password/reset', to: 'password_resets#reset'
-  put 'password/update', to: 'password_resets#update'
-
   post 'auth' , to: 'auth#create'
 
   delete 'logout' , to: 'auth#destroy'
