@@ -80,6 +80,13 @@ class RequestController < ApplicationController
             requests:   @requests.paginate(:page => params[:page] ) 
         } , include: [ :user  ]
     end
+
+    def getRequestsByIDAccepted
+        @requests = Request.where(user_id: params[:user_id]).where("status = ?" , status = 1 ).order('created_at DESC')
+        render json:  { 
+            requests:   @requests.paginate(:page => params[:page] ) 
+        } , include: [ :user  ]
+    end
  
     # request updated by employee
     def updateRequestByEmployee
