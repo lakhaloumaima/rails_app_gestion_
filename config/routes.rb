@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   get 'getrequestsbyid/:user_id' , to: 'request#getRequestsByID'
 
-  post 'requests' , to: 'request#create'
+  post 'addRequest' , to: 'request#create'
 
   delete 'requests/:id' , to: 'request#destroyR'
 
