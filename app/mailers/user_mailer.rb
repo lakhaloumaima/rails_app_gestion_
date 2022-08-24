@@ -15,4 +15,6 @@ class UserMailer < ApplicationMailer
     #mail to: user.email, :subject => 'Reset password instructions'
   end
 
+  
+
 end
