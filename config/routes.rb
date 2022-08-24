@@ -71,7 +71,10 @@ Rails.application.routes.draw do
 
   resources :password_resets
 
-  root 'members#index'
+  root 'members#index'                
+
+
+  
 
 
 
