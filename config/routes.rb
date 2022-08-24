@@ -69,7 +69,7 @@ Rails.application.routes.draw do
 
   # ##################################################  members  ###############################################
 
-  # resources :password_resets
+  resources :password_resets
 
   root 'members#index'
 
