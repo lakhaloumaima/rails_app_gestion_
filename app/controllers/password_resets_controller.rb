@@ -18,9 +18,9 @@ class PasswordResetsController < ApplicationController
         if @user.update(user_params)
           render json: "password link has been updated"
         else
-          # redirect_to 'http://localhost:4200'
+          redirect_to 'http://localhost:4200'
 
-          redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true 
+          #redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true 
         end
       end
       private
