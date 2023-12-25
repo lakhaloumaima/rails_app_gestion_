@@ -4,9 +4,9 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(_resource, _opts = {})
 
-    if current_user 
+    if current_user
       cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
-      av =  current_user.avatar.attached? ? url_for(current_user.avatar) : nil
+      av =  current_user.avatar.attached? ? url_for(current_user.avatar) : cover_url
 
       render json: {
         message: 'You are logged in.',
@@ -17,11 +17,11 @@ class Users::SessionsController < Devise::SessionsController
         avv: av  ,
         status: 200 ,
 
-      } , status: :ok 
-    else  
+      } , status: :ok
+    else
       render json: {  status: 401  }
-    end 
-    
+    end
+
   end
 
 

@@ -56,7 +56,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "Freelancy_back_production"
 
-  
+
   config.action_mailer.perform_caching = false
   # Enable server timing
   config.server_timing = true
@@ -64,16 +64,22 @@ Rails.application.configure do
   host = 'localhost:3000' #replace with your own url
   Rails.application.routes.default_url_options[:host] = 'localhost:3000'
   config.action_mailer.default_url_options = { host: host }
-  
-  # SMTP settings for gmail
+
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => "lakhalouma6@gmail.com",
-    :password             => "jsytyegtmvbncdqi",
-    :authentication       => "plain",
-    :enable_starttls_auto => true
+    address: '127.0.0.1',
+    port: 1025,
   }
+
+  # SMTP settings for gmail
+  # config.action_mailer.smtp_settings = {
+  #   :address              => "smtp.gmail.com",
+  #   :port                 => 587,
+  #   :user_name            => "lakhalouma6@gmail.com",
+  #   :password             => "jsytyegtmvbncdqi",
+  #   :authentication       => "plain",
+  #   :enable_starttls_auto => true
+  # }
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false

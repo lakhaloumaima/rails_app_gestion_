@@ -4,7 +4,7 @@ common: &common
  encoding: unicode
  pool: 5
  username: postgres # OR your username
- password: postgres
+ password: 1234
  schema_search_path: "public,hstore,uuid"
 development:
  <<: *common

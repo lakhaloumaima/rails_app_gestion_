@@ -22,7 +22,9 @@ gem 'byebug', '~> 9.0', '>= 9.0.6'
 gem "bcrypt", "~> 3.1.7"
 gem "rack-cors"
 
-gem "devise" 
+gem "devise"
+
+gem "mailcatcher"
 
 gem 'activestorage'
 
