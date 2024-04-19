@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
 
-  devise_for :users,
-            controllers: {
-              sessions: 'users/sessions',
-              registrations: 'users/registrations' 
-             
-                            
-            } 
+  # devise_for :users,
+  #           controllers: {
+  #             sessions: 'users/sessions',
+  #             registrations: 'users/registrations'
+
+
+  #           }
 
 
 
@@ -20,9 +20,12 @@ Rails.application.routes.draw do
 
   delete 'logout' , to: 'auth#destroy'
 
+  post "sessions_user", to: "sessions_user#create"
+
+
   # ##################################################  requests  ###############################################
   get 'requests' , to: 'request#index'
-  
+
   get 'requests/:last_name' , to: 'request#getEmployeesByName'
 
   get 'getrequestsbyid/:user_id' , to: 'request#getRequestsByID'
@@ -36,9 +39,9 @@ Rails.application.routes.draw do
   patch 'updateRequestByEmployee/:id' , to: 'request#updateRequestByEmployee'
 
   get 'getrequestacceptedbyemployee' , to: 'request#getrequestacceptedbyemployee'
-  
+
   get 'getrequestinprogressbyemployee' , to: 'request#getrequestinprogressbyemployee'
-  
+
   get 'getrequestrefusedbyemployee' , to: 'request#getrequestrefusedbyemployee'
 
   get 'getrequestdata/:id' , to: 'request#getrequestdata'
@@ -57,7 +60,7 @@ Rails.application.routes.draw do
   patch 'updateuser/:id' , to: 'employee#updateuser'
 
   get 'employees' , to: 'employee#getAllEmployees'
-  
+
   get 'countall' , to: 'employee#countAll'
 
   delete 'employees/:id' , to: 'employee#destroyE'
@@ -67,18 +70,23 @@ Rails.application.routes.draw do
   get 'getEmployeeByEmail/:email' , to: 'employee#getEmployeeByEmail'
 
 
+  post "createAdmin", to: "members#createAdmin"
+
+  post "createEmployee", to: "members#createEmployee"
+
+
   # ##################################################  members  ###############################################
 
   resources :password_resets
 
-  root 'members#index'                
-
-
-  
+  root 'members#index'
 
 
 
 
-  
+
+
+
+
 
 end

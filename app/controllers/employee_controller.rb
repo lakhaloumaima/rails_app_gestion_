@@ -22,13 +22,13 @@ class EmployeeController < ApplicationController
   # employee crée par l ' admin
   def createEmployee
 
-    @employee = User.new(post_params1)
+    @employee = User.new(post_params1.merge( role: 1 ))
     # cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
 
       if @employee.save
 
-        UserMailer.registration_confirmation(@employee).deliver
-        @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+        # UserMailer.registration_confirmation(@employee).deliver
+        # @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
 
         render json: {
 
@@ -48,24 +48,23 @@ class EmployeeController < ApplicationController
   def updateuser
     @user = User.find(params[:id])
 
-    cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
-    av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+    if @user.update(post_paramsEmployee)
+      # cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
+      # av = @user.avatar.attached? ? url_for(@user.avatar) : nil
 
-    if @user.update(post_paramsEmployee )
-
-       render json:  {
-
-        role: @user.role  ,
-        id: @user.id  ,
-        user: @user ,
-        avatar: cover_url  ,
-        avv: av
+      render json: {
+        role: @user.role,
+        id: @user.id,
+        user: @user,
+        status: :created
+        # avatar: cover_url,
+        # avv: av
       }
-
     else
-      render json: @user.errors, statut: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
     end
   end
+
 
   #liste des employees consultée par l ' admin
   def getAllEmployees
@@ -142,11 +141,11 @@ class EmployeeController < ApplicationController
   end
 
   def post_paramsEmployee
-    params.permit( :email, :last_name, :first_name, :address, :phone , :password )
+    params.permit( :email, :password, :last_name, :first_name, :address, :phone )
   end
 
   def post_params1
-    params.permit( :email, :password, :role  )
+    params.permit( :email, :password   )
   end
 
 end

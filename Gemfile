@@ -22,6 +22,8 @@ gem 'byebug', '~> 9.0', '>= 9.0.6'
 gem "bcrypt", "~> 3.1.7"
 gem "rack-cors"
 
+gem 'jwt'
+
 gem "devise"
 
 gem "mailcatcher"
