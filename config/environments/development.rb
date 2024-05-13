@@ -1,4 +1,3 @@
-
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
@@ -14,7 +13,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = false
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
@@ -47,7 +46,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -56,24 +55,33 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "Freelancy_back_production"
 
-  
   config.action_mailer.perform_caching = false
+
   # Enable server timing
   config.server_timing = true
-  config.action_mailer.delivery_method = :smtp
-  host = 'localhost:3000' #replace with your own url
-  Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+
+  host = 'localhost:3000' # replace with your own URL
+  Rails.application.routes.default_url_options[:host] = host
   config.action_mailer.default_url_options = { host: host }
-  
-  # SMTP settings for gmail
+
+  # Set up SMTP settings for MailCatcher
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => "lakhalouma6@gmail.com",
-    :password             => "jsytyegtmvbncdqi",
-    :authentication       => "plain",
-    :enable_starttls_auto => true
+    address: '127.0.0.1',
+    port: 1025,
+    domain: '127.0.0.1'
   }
+
+        # # SMTP settings for gmail
+  # config.action_mailer.smtp_settings = {
+  #   :address              => "smtp.gmail.com",
+  #   :port                 => 587,
+  #   :user_name            => "lakhalouma6@gmail.com",
+  #   :password             => "bhdq etuh vdjn gusf",
+  #   :authentication       => "plain",
+  #   :enable_starttls_auto => true
+  # }
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
@@ -93,9 +101,9 @@ Rails.application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
   # Do not dump schema after migrations.

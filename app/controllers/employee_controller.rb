@@ -8,11 +8,11 @@ class EmployeeController < ApplicationController
       user.email_confirmed = true
       user.confirm_token = nil
       user.save
-      # redirect_to 'http://localhost:4200/'
+      redirect_to 'http://localhost:4200/'
 
-      redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true 
+      # redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true
     else
-      
+
       render json: { status: 500 }
 
     end
@@ -20,29 +20,32 @@ class EmployeeController < ApplicationController
   end
 
   # employee crée par l ' admin
-  def createEmployee     
+  def createEmployee
 
     @employee = User.new(post_params1)
-    # cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
-  
-      if @employee.save 
+    cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+    if @employee.save
 
-        UserMailer.registration_confirmation(@employee).deliver
-        @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+      UserMailer.registration_confirmation(@employee).deliver
 
-        render json: {
-      
-          employee: @employee  
-        
-        #  avatar: cover_url 
-        #  methods: [:user_image_url] 
-        }, status: :ok 
-      #  render json:  @employee 
-        
-      else
-          render json: @employee.errors
-      end      
-  end   
+      binding.pry
+
+
+      # @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+
+      render json: {
+
+        employee: @employee
+
+      #  avatar: cover_url
+      #  methods: [:user_image_url]
+      }, status: :ok
+    #  render json:  @employee
+
+    else
+        render json: @employee.errors
+    end
+  end
 
 
   def updateuser
@@ -53,13 +56,13 @@ class EmployeeController < ApplicationController
 
     if @user.update(post_paramsEmployee )
 
-       render json:  { 
-       
+       render json:  {
+
         role: @user.role  ,
         id: @user.id  ,
         user: @user ,
         avatar: cover_url  ,
-        avv: av  
+        avv: av
       }
 
     else
@@ -70,18 +73,18 @@ class EmployeeController < ApplicationController
   #liste des employees consultée par l ' admin
   def getAllEmployees
     @employees = User.where(role: '1' ).order('id DESC')
-    
-    render json:  { 
-      employees:  @employees.paginate(:page => params[:page] ) 
-  
-    } 
-    
+
+    render json:  {
+      employees:  @employees.paginate(:page => params[:page] )
+
+    }
+
     #   @demandes = Demande.paginate(:page => params[:page], :per_page => 10)
   end
 
   def getemployedata
     @user = User.where(id: params[:id])
-    render json: @user 
+    render json: @user
   end
 
   def getEmployeeByEmail
@@ -92,20 +95,20 @@ class EmployeeController < ApplicationController
 
   def updateimageuser
     @user = User.find(params[:id])
-   
+
     if @user.update(paramsimageuser)
       cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
       av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
 
-      render json:  { 
-       
+      render json:  {
+
         role: @user.role  ,
         id: @user.id  ,
         user: @user ,
         avatar: cover_url  ,
-        avv: av  
+        avv: av
       }
-    
+
 
     else
       render json: @user.errors, statut: :unprocessable_entity
@@ -122,7 +125,7 @@ class EmployeeController < ApplicationController
     render json: {
     data:[ @employees , @request_inprogress  , @request_accepted , @request_refused ]
     }
-    
+
   end
 
   # demande suprimée par l ' admin
@@ -131,7 +134,7 @@ class EmployeeController < ApplicationController
       @employee.destroy
   end
 
-  private 
+  private
 
   def user_image_url
     avatar.attached? ? url_for(avatar) : nil
@@ -149,4 +152,4 @@ class EmployeeController < ApplicationController
     params.permit( :email, :password, :role  )
   end
 
-end 
+end

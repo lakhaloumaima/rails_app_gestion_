@@ -26,7 +26,7 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-  
+
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
@@ -74,22 +74,22 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-    # Enable server timing
-    config.server_timing = true
-    config.action_mailer.delivery_method = :smtp
-    host = 'gestionback.herokuapp.com'
-    Rails.application.routes.default_url_options[:host] = 'gestionback.herokuapp.com'
-    config.action_mailer.default_url_options = { host: host }
-    
-  # SMTP settings for gmail
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => "lakhalouma6@gmail.com",
-    :password             => "jsytyegtmvbncdqi",
-    :authentication       => "plain",
-    :enable_starttls_auto => true
-  }
+  #   # Enable server timing
+  #   config.server_timing = true
+  #   config.action_mailer.delivery_method = :smtp
+  #   host = 'gestionback.herokuapp.com'
+  #   Rails.application.routes.default_url_options[:host] = 'gestionback.herokuapp.com'
+  #   config.action_mailer.default_url_options = { host: host }
+
+  # # SMTP settings for gmail
+  # config.action_mailer.smtp_settings = {
+  #   :address              => "smtp.gmail.com",
+  #   :port                 => 587,
+  #   :user_name            => "lakhalouma6@gmail.com",
+  #   :password             => "jsytyegtmvbncdqi",
+  #   :authentication       => "plain",
+  #   :enable_starttls_auto => true
+  # }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -117,12 +117,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  
- 
+
+
 end
-
-
-
-
-
-
