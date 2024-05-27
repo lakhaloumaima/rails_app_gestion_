@@ -28,7 +28,7 @@ class EmployeeController < ApplicationController
 
       UserMailer.registration_confirmation(@employee).deliver
 
-      binding.pry
+      # binding.pry
 
 
       # @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')

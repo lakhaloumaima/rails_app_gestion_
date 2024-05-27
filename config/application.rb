@@ -16,12 +16,14 @@ module TestBack
 
      # Required for all session management (regardless of session_store)
     config.middleware.use ActionDispatch::Cookies
- 
+
     config.middleware.use config.session_store, config.session_options
 
     config.api_only = true
 
     config.assets.initialize_on_precompile = false
+
+    config.action_cable.mount_path = '/cable'
 
     # Configuration for the application, engines, and railties goes here.
     #
