@@ -75,6 +75,12 @@ Rails.application.routes.draw do
   root 'members#index'
 
   resources :messages
+
+  get 'getMessagesByReceiverId/:receiver_id/:sender_id' , to: 'messages#getMessagesByReceiverId'
+
+  get 'getMessagesBySenderId/:sender_id/:receiver_id' , to: 'messages#getMessagesBySenderId'
+
+
   mount ActionCable.server => '/cable'
 
 

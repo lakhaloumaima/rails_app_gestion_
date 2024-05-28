@@ -1,10 +1,12 @@
 
 class Users::SessionsController < Devise::SessionsController
+  # include CurrentUserConcern
 
 
   def respond_with(_resource, _opts = {})
 
     if current_user
+      session[:user_id] = current_user.id
       # cover_url = rails_blob_path(current_user.avatar, disposition: "attachment")
       # av =  current_user.avatar.attached? ? url_for(current_user.avatar) : nil
 

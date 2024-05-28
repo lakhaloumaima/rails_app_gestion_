@@ -1,23 +1,24 @@
 class User < ApplicationRecord
   include Rails.application.routes.url_helpers
-  
+
 
   before_create :confirmation_token
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable 
-    
+         :recoverable, :rememberable, :validatable
+
+  has_many :messages
 
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   validates_uniqueness_of :email
 
   enum role: [ :admin , :employee  ]
 
-  has_many :requests , dependent: :destroy 
-  
+  has_many :requests , dependent: :destroy
+
   has_one_attached :avatar, dependent: :destroy
-  
+
 
   ###########################################     ACTIVATE EMAIL      ################################################
   def email_activate

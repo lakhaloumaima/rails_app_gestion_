@@ -1,5 +1,6 @@
 class MessagesController < ApplicationController
   # before_action :set_message, only: %i[ show update destroy ]
+  # before_action :authenticate_user! # Ensures user is authenticated before accessing messages
 
   # GET /messages
   def index
@@ -7,15 +8,57 @@ class MessagesController < ApplicationController
     #   @messages = Message.where(candidature_id: params[:candidature_id])
     # end
     # render json: @messages
-    render json: Message.all
+    @messages = Message.all.includes( :sender, :receiver).order(created_at: :desc)
+    @messages.each do |message|
+      sender_first_name = message.sender.email
+      receiver_first_name = message.receiver.email
+
+      # Use sender_first_name and receiver_first_name as needed
+    end
+    render json: @messages, include: [:sender, :receiver]
 
   end
+
+    # GET /messages
+    def getMessagesByReceiverId
+      # if params[:candidature_id].present?
+      #   @messages = Message.where(candidature_id: params[:candidature_id])
+      # end
+      # render json: @messages
+      @messages = Message.where( receiver_id: params[:receiver_id], sender_id: params[:sender_id]).includes( :sender, :receiver).order(created_at: :desc)
+      @messages.each do |message|
+        sender_first_name = message.sender.email
+        receiver_first_name = message.receiver.email
+
+        # Use sender_first_name and receiver_first_name as needed
+      end
+
+      render json: @messages, include: [:sender, :receiver]
+
+    end
+
+    def getMessagesBySenderId
+      # if params[:candidature_id].present?
+      #   @messages = Message.where(candidature_id: params[:candidature_id])
+      # end
+      # render json: @messages
+      @messages = Message.where(sender_id: params[:sender_id], receiver_id: params[:receiver_id] ).includes( :sender, :receiver).order(created_at: :desc)
+      @messages.each do |message|
+        sender_first_name = message.sender.email
+        receiver_first_name = message.receiver.email
+
+        # Use sender_first_name and receiver_first_name as needed
+      end
+      render json: @messages, include: [:sender, :receiver]
+
+    end
 
   # POST /messages
   def create
     @message = Message.new(message_params)
-    @message.sender_id = 20 # current_user.id
-    @message.receiver_id = 4 # params[:receiver_id]
+
+    # @message.sender_id = 4
+    # @message.receiver_id = 20 # params[:receiver_id]
 
     if @message.save
       ActionCable.server.broadcast('chat_channel', { message: @message })
