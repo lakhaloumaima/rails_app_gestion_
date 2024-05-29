@@ -22,11 +22,15 @@ gem 'byebug', '~> 9.0', '>= 9.0.6'
 gem "bcrypt", "~> 3.1.7"
 gem "rack-cors"
 
-gem "devise" 
+gem "devise"
 
 gem 'activestorage'
 
 gem 'will_paginate', '~> 3.0', '>= 3.0.7'
+
+gem 'prawn'
+gem 'carrierwave', '~> 2.0'
+gem 'mini_magick'     # For image processing (optional, if you need image handling)
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"

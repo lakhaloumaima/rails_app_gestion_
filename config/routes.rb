@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   devise_for :users,
             controllers: {
               sessions: 'users/sessions',
@@ -59,6 +58,9 @@ Rails.application.routes.draw do
 
   get 'employees' , to: 'employee#getAllEmployees'
 
+  get 'users' , to: 'employee#getAllUsers'
+
+
   get 'countall' , to: 'employee#countAll'
 
   delete 'employees/:id' , to: 'employee#destroyE'
@@ -80,6 +82,13 @@ Rails.application.routes.draw do
 
   get 'getMessagesBySenderId/:sender_id/:receiver_id' , to: 'messages#getMessagesBySenderId'
 
+  resources :request do
+    member do
+      get 'export_pdf'
+      post 'import_pdf'
+      get 'export_certificate'
+    end
+  end
 
   mount ActionCable.server => '/cable'
 
