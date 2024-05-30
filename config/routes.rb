@@ -29,7 +29,12 @@ Rails.application.routes.draw do
 
   post 'addRequest' , to: 'request#create'
 
+  post 'addReason' , to: 'reason#create'
+
   delete 'requests/:id' , to: 'request#destroyR'
+
+  delete 'reasons/:id' , to: 'reason#destroyReason'
+
 
   patch 'requests/:id' , to: 'request#update'
 
@@ -89,6 +94,8 @@ Rails.application.routes.draw do
       get 'export_certificate'
     end
   end
+
+  resources :reason
 
   mount ActionCable.server => '/cable'
 

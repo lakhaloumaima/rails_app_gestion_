@@ -6,7 +6,7 @@ class RequestController < ApplicationController
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
 
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
 
         #   @request = Request.paginate(:page => params[:page], :per_page => 10)
     end
@@ -22,7 +22,7 @@ class RequestController < ApplicationController
 
         if @request.save
 
-            render json: @request , include: [ :user ]
+            render json: @request , include: [ :user, :reason ]
 
         else
             render json: @request.errors
@@ -45,7 +45,7 @@ class RequestController < ApplicationController
 
             @request.update(post_params3)
 
-            render json: @request , include: [ :user ]
+            render json: @request , include: [ :user, :reason ]
 
         elsif post_params3[:status] == "accepted"
 
@@ -59,7 +59,7 @@ class RequestController < ApplicationController
            @request.update(post_params3)
            @user.update(:solde => result)
 
-           render json: @request, include: [  :user  ]
+           render json: @request, include: [  :user, :reason  ]
 
         else
            render json: @request.errors, statut: :unprocessable_entity
@@ -78,14 +78,14 @@ class RequestController < ApplicationController
         @requests = Request.where(user_id: params[:user_id]).order('created_at DESC')
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
 
     def getRequestsByIDAccepted
         @requests = Request.where(user_id: params[:user_id]).where("status = ?" , status = 1 ).order('created_at DESC')
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
 
     # request updated by employee
@@ -98,7 +98,7 @@ class RequestController < ApplicationController
 
             @request.update( :days => days )
 
-            render json: @request , include: [ :user ]
+            render json: @request , include: [ :user, :reason ]
 
         else
             render json: @request.errors, statut: :unprocessable_entity
@@ -111,7 +111,7 @@ class RequestController < ApplicationController
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
 
     def getrequestacceptedbyemployee
@@ -120,7 +120,7 @@ class RequestController < ApplicationController
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
 
     def getrequestrefusedbyemployee
@@ -129,13 +129,12 @@ class RequestController < ApplicationController
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
-
 
     def getrequestdata
         @request = Request.where(id: params[:id])
-        render json: @request , include: [ :user ]
+        render json: @request , include: [ :user, :reason ]
     end
 
 
@@ -143,7 +142,7 @@ class RequestController < ApplicationController
         requests = Request.joins(:users).where(email: params[:email])
         render json:  {
             requests:   @requests
-        } , include: [ :user  ]
+        } , include: [ :user, :reason ]
     end
 
     def import_pdf
@@ -154,7 +153,7 @@ class RequestController < ApplicationController
         else
           render json: @request.errors, status: :unprocessable_entity
         end
-      end
+    end
 
     def export_certificate
         request = Request.find(params[:id])
@@ -189,7 +188,7 @@ class RequestController < ApplicationController
     # end
 
     def post_params
-        params.permit(  :start_date, :end_date, :reason , :description , :user_id , :certificate )
+        params.permit(  :start_date, :end_date, :reason_id , :description , :user_id , :certificate )
 
     end
 
@@ -198,8 +197,8 @@ class RequestController < ApplicationController
     end
 
     def post_params4
-        params.permit( :start_date, :end_date , :reason , :description , :certificate )
+        params.permit( :start_date, :end_date , :reason_id , :description , :certificate )
     end
 
 
- end
+end

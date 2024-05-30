@@ -9,6 +9,8 @@ class Request < ApplicationRecord
 
   belongs_to :user
 
+  belongs_to :reason
+
   enum status: [ :in_progress , :accepted  , :refused  ]
 
 
