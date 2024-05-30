@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   include Rails.application.routes.url_helpers
 
+  has_one_attached :avatar, dependent: :destroy
 
   before_create :confirmation_token
   # Include default devise modules. Others available are:
@@ -16,8 +17,6 @@ class User < ApplicationRecord
   enum role: [ :admin , :employee  ]
 
   has_many :requests , dependent: :destroy
-
-  has_one_attached :avatar, dependent: :destroy
 
 
   ###########################################     ACTIVATE EMAIL      ################################################

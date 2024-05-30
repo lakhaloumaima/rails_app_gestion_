@@ -23,19 +23,19 @@ class EmployeeController < ApplicationController
   def createEmployee
 
     @employee = User.new(post_params1)
-    cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+    # cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+
     if @employee.save
 
       UserMailer.registration_confirmation(@employee).deliver
 
-      # binding.pry
+      @employee  = @employee.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
 
-
-      # @user = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+      # @employee = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
 
       render json: {
 
-        employee: @employee
+        employee: @employee,
 
       #  avatar: cover_url
       #  methods: [:user_image_url]
@@ -51,17 +51,19 @@ class EmployeeController < ApplicationController
   def updateuser
     @user = User.find(params[:id])
 
-    cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
-    av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+    # cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
+    # @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
+
+    av =  @user.avatar.attached? ? url_for( @user.avatar) : nil
+
 
     if @user.update(post_paramsEmployee )
 
-       render json:  {
+      render json:  {
 
         role: @user.role  ,
         id: @user.id  ,
         user: @user ,
-        avatar: cover_url  ,
         avv: av
       }
 
@@ -109,15 +111,17 @@ class EmployeeController < ApplicationController
     @user = User.find(params[:id])
 
     if @user.update(paramsimageuser)
-      cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
-      av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+      # cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
+      # av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
+      # byebug
+      # @user  =  @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
+      av =  @user.avatar.attached? ? url_for( @user.avatar) : nil
 
       render json:  {
 
         role: @user.role  ,
         id: @user.id  ,
         user: @user ,
-        avatar: cover_url  ,
         avv: av
       }
 
