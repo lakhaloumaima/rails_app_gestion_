@@ -3,6 +3,17 @@ class User < ApplicationRecord
 
   has_one_attached :avatar, dependent: :destroy
 
+  belongs_to :company
+  acts_as_tenant(:company)
+
+
+  validates :email, presence: true, uniqueness: true
+  validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+
+  validates :password, presence: true
+
+  validates :company_id, presence: true
+
   before_create :confirmation_token
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -11,8 +22,6 @@ class User < ApplicationRecord
 
   has_many :messages
 
-  validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-  validates_uniqueness_of :email
 
   enum role: [ :admin , :employee  ]
 

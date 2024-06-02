@@ -26,6 +26,9 @@ gem "devise"
 
 gem 'activestorage'
 
+gem 'acts_as_tenant'
+
+
 gem 'will_paginate', '~> 3.0', '>= 3.0.7'
 
 gem 'prawn'

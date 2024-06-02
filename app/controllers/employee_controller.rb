@@ -7,17 +7,34 @@ class EmployeeController < ApplicationController
     if user
       user.email_confirmed = true
       user.confirm_token = nil
-      user.save
-      redirect_to 'http://localhost:4200/'
-
-      # redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true
+      if user.save(validate: false) # Exclude password validation
+        redirect_to 'http://localhost:4200/'
+      else
+        Rails.logger.error(user.errors.full_messages) # Log validation errors
+        render json: { error: 'Failed to save user' }, status: :unprocessable_entity
+      end
     else
-
-      render json: { status: 500 }
-
+      render json: { error: 'User not found' }, status: :not_found
     end
-
   end
+
+
+  # def confirm_email
+  #   user = User.find_by_confirm_token(params[:id])
+  #   if user
+  #     user.email_confirmed = true
+  #     user.confirm_token = nil
+
+  #     redirect_to 'http://localhost:4200/' if  user.save
+
+  #     # redirect_to 'https://gestionfront.herokuapp.com/' , allow_other_host: true
+  #   else
+
+  #     render json: { status: 500 }
+
+  #   end
+
+  # end
 
   # employee crée par l ' admin
   def createEmployee

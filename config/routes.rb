@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     end
   end
 
+  # constraints subdomain: /.+/ do
+  #   get '/', to: 'subdomain#redirect'
+  # end
+
   post 'auth' , to: 'auth#create'
 
   delete 'logout' , to: 'auth#destroy'

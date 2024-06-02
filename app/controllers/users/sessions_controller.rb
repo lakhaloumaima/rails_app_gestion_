@@ -1,14 +1,7 @@
 class Users::SessionsController < Devise::SessionsController
-  def respond_with(_resource, _opts = {})
+  def respond_with(resource, _opts = {})
     if current_user
       session[:user_id] = current_user.id
-
-      # cover_url = if current_user.avatar.attached?
-      #               rails_blob_path(current_user.avatar, disposition: "attachment")
-      #             else
-      #               nil
-      #             end
-
       av = current_user.avatar.attached? ? url_for(current_user.avatar) : nil
 
       render json: {
@@ -17,7 +10,9 @@ class Users::SessionsController < Devise::SessionsController
         role: current_user.role,
         id: current_user.id,
         avv: av,
-        status: 200
+        status: 200,
+        subdomain: current_user.company.subdomain,
+        redirect_url: subdomain_url(current_user.company.subdomain)
       }, status: :ok
     else
       render json: { status: 401 }
@@ -26,7 +21,6 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_to_on_destroy
     log_out_success && return if current_user
-
     log_out_failure
   end
 
@@ -36,5 +30,11 @@ class Users::SessionsController < Devise::SessionsController
 
   def log_out_failure
     render json: { message: 'Hmm nothing happened.' }, status: :unauthorized
+  end
+
+  private
+
+  def subdomain_url(subdomain)
+    "http://#{subdomain}.localhost:4200"
   end
 end
