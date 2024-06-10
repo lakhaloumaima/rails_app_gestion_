@@ -178,11 +178,11 @@ class EmployeeController < ApplicationController
   end
 
   def post_paramsEmployee
-    params.permit( :email, :last_name, :first_name, :address, :phone , :password )
+    params.permit( :email, :last_name, :first_name, :address, :phone, :cin , :password )
   end
 
   def post_params1
-    params.permit( :email, :password, :role  )
+    params.permit( :email, :password, :role, :cin, :address, :phone, :company_id )
   end
 
 end
