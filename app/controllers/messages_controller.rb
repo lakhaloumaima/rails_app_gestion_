@@ -61,6 +61,8 @@ class MessagesController < ApplicationController
     # @message.receiver_id = 20 # params[:receiver_id]
 
     if @message.save
+      byebug
+
       ActionCable.server.broadcast('chat_channel', { message: @message })
       render json: @message, status: :created, location: @message
     else

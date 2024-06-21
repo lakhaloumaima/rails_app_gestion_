@@ -5,10 +5,11 @@ class ChatChannel < ApplicationCable::Channel
 
 
   def create(data)
-    if message.persisted?
-      ActionCable.server.broadcast('chat_channel', message: message)
+    @message = Message.new(data['message'])
+    if @message.save
+      ActionCable.server.broadcast('chat_channel', { message: @message })
     else
-      ActionCable.server.broadcast('chat_channel', errors: message.errors.full_messages)
+      ActionCable.server.broadcast('chat_channel', { errors: @message.errors.full_messages })
     end
   end
 

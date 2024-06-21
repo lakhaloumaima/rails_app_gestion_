@@ -45,8 +45,8 @@ class User < ApplicationRecord
   def send_reset_password
     generate_token(:reset_password_token)
     self.reset_password_sent_at = Time.zone.now
-    save!
-    UserMailer.forgot_password(self).deliver
+    save!(validate: false)  # Skip validations
+    UserMailer.forgot_password(self).deliver_now
   end
 
   def generate_token(column)
