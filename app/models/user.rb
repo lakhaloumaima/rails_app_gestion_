@@ -6,11 +6,8 @@ class User < ApplicationRecord
   belongs_to :company
   acts_as_tenant(:company)
 
-
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-
-  validates :password, presence: true
 
   validates :company_id, presence: true
 
@@ -23,7 +20,7 @@ class User < ApplicationRecord
   has_many :messages
 
 
-  enum role: [ :admin , :employee  ]
+  enum role: [ :admin , :employee, :rh  ]
 
   has_many :requests , dependent: :destroy
 

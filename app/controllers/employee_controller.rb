@@ -41,14 +41,15 @@ class EmployeeController < ApplicationController
 
     @employee = User.new(post_params1)
     # cover_url = rails_blob_path(@employee.avatar, disposition: "attachment")
+    @employee.solde = @employee.company.solde if @employee.company.present?
 
     if @employee.save
 
       UserMailer.registration_confirmation(@employee).deliver
 
-      @employee  = @employee.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
+      @employee  = @employee.avatar.attach(io: File.open(Rails.root.join('public', 'logo2.jpeg')), filename: 'logo2.jpeg')
 
-      # @employee = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo.png"),filename: 'logo.png', content_type: 'image/png')
+      # @employee = User.last.avatar.attach(io: File.open("#{Rails.root}/app/assets/images/logo2.jpeg"),filename: 'logo2.jpeg', content_type: 'image/png')
 
       render json: {
 
@@ -69,7 +70,7 @@ class EmployeeController < ApplicationController
     @user = User.find(params[:id])
 
     # cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
-    # @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
+    # @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo2.jpeg')), filename: 'logo2.jpeg')
 
     av =  @user.avatar.attached? ? url_for( @user.avatar) : nil
 
@@ -91,7 +92,7 @@ class EmployeeController < ApplicationController
 
   #liste des employees consultée par l ' admin
   def getAllEmployees
-    @employees = User.where( role: 1 ).order('id DESC')
+    @employees = User.where.not( role: 0 ).order('id DESC')
 
     render json:  {
       employees:  @employees.paginate(:page => params[:page] )
@@ -123,6 +124,40 @@ class EmployeeController < ApplicationController
     render json: employee
   end
 
+  def getUsersByRole
+    # Fetch the company using the company_id parameter
+    company = Company.find(params[:company_id])
+
+    # Fetch users that belong to the company with the specified role
+    users = company.users.where(role: params[:role]).paginate(page: params[:page])
+
+    # Generate avatar URLs
+    # users_with_avatars = users.map do |user|
+    #   if user.avatar.attached?
+    #     user.as_json.merge(
+    #       avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+    #       )
+    #   else
+    #     user
+    #   end
+    # end
+
+    render json: {
+      employees: users
+    }, include: [:company]
+  end
+
+
+  def getUserById
+    user = User.find(params[:id])
+
+      user.as_json.merge(
+        avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+      )
+
+    render json: { user: user }, include: [ :company ]
+  end
+
 
   def updateimageuser
     @user = User.find(params[:id])
@@ -131,7 +166,7 @@ class EmployeeController < ApplicationController
       # cover_url = rails_blob_path(@user.avatar, disposition: "attachment")
       # av =  @user.avatar.attached? ? url_for(@user.avatar) : nil
       # byebug
-      # @user  =  @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo.png')), filename: 'logo.png')
+      # @user  =  @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo2.jpeg')), filename: 'logo2.jpeg')
       av =  @user.avatar.attached? ? url_for( @user.avatar) : nil
 
       render json:  {
@@ -150,13 +185,20 @@ class EmployeeController < ApplicationController
 
 
   def countAll
-    @employees = User.all.select { |m| m.role == 'employee' }.count
-    @request_inprogress = Request.all.select { |m| m.status =='in_progress' }.count
-    @request_accepted = Request.all.select { |m| m.status == 'accepted' }.count
-    @request_refused = Request.all.select { |m| m.status == 'refused' }.count
+    company = Company.find(params[:company_id])
+
+    employees = company.users.where.not(role: 'admin')
+
+    requests = Request.where(user_id: employees.pluck(:id))
+
+    @request_inprogress = requests.select { |m| m.status =='in_progress' }.count
+    @request_accepted = requests.select { |m| m.status == 'accepted' }.count
+    @request_refused = requests.select { |m| m.status == 'refused' }.count
+
+    @employee_count = employees.count
 
     render json: {
-    data:[ @employees , @request_inprogress  , @request_accepted , @request_refused ]
+    data:[ @employee_count , @request_inprogress  , @request_accepted , @request_refused ]
     }
 
   end
@@ -182,7 +224,7 @@ class EmployeeController < ApplicationController
   end
 
   def post_params1
-    params.permit( :email, :password, :role, :cin, :address, :phone, :company_id )
+    params.permit( :email, :password, :last_name, :first_name, :role, :cin, :address, :phone, :company_id )
   end
 
 end

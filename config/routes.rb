@@ -24,8 +24,11 @@ Rails.application.routes.draw do
 
   delete 'logout' , to: 'auth#destroy'
 
+  get 'getUserById/:id' , to: 'employee#getUserById'
+
+
   # ##################################################  requests  ###############################################
-  get 'requests' , to: 'request#index'
+  get 'requests/:company_id' , to: 'request#index'
 
   get 'requests/:last_name' , to: 'request#getEmployeesByName'
 
@@ -44,15 +47,23 @@ Rails.application.routes.draw do
 
   patch 'updateRequestByEmployee/:id' , to: 'request#updateRequestByEmployee'
 
-  get 'getrequestacceptedbyemployee' , to: 'request#getrequestacceptedbyemployee'
+  get 'getrequestacceptedbyemployee/:company_id' , to: 'request#getrequestacceptedbyemployee'
 
-  get 'getrequestinprogressbyemployee' , to: 'request#getrequestinprogressbyemployee'
+  get 'getrequestinprogressbyemployee/:company_id' , to: 'request#getrequestinprogressbyemployee'
 
-  get 'getrequestrefusedbyemployee' , to: 'request#getrequestrefusedbyemployee'
+  get 'getrequestrefusedbyemployee/:company_id' , to: 'request#getrequestrefusedbyemployee'
 
   get 'getrequestdata/:id' , to: 'request#getrequestdata'
 
   get 'getRequestByEmail/:email' , to: 'request#getRequestByEmail'
+
+  get 'getAllRequestsByCompany/:company_id' , to: 'request#getAllRequestsByCompany'
+
+  get 'getAllEmployeesByCompany/:company_id' , to: 'request#getAllEmployeesByCompany'
+
+  get 'getUsersByRole/:role/:company_id' , to: 'employee#getUsersByRole'
+
+  get 'getAllUsersByCompany/:company_id' , to: 'request#getAllUsersByCompany'
 
   get 'getRequestsByIdAccepted/:user_id' , to: 'request#getRequestsByIDAccepted'
 
@@ -70,7 +81,7 @@ Rails.application.routes.draw do
   get 'users' , to: 'employee#getAllUsers'
 
 
-  get 'countall' , to: 'employee#countAll'
+  get 'countall/:company_id' , to: 'employee#countAll'
 
   delete 'employees/:id' , to: 'employee#destroyE'
 

@@ -2,7 +2,14 @@ class RequestController < ApplicationController
 
     #liste des demandes consultée par l ' admin
     def index
-        @requests = Request.all.order('created_at DESC')
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company
+        users = company.users
+
+        @requests = Request.where(user_id: users.pluck(:id)).order('created_at DESC')
+
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
 
@@ -18,7 +25,7 @@ class RequestController < ApplicationController
 
         days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
         @request.update( :days => days )
-
+        # byebug
 
         if @request.save
 
@@ -38,34 +45,30 @@ class RequestController < ApplicationController
 
     # demande modifiée par l ' admin
     def update
-
         @request = Request.find(params[:id])
 
         if post_params3[:status] == "in_progress" || post_params3[:status] == "refused"
-
-            @request.update(post_params3)
-
-            render json: @request , include: [ :user, :reason ]
-
+            if @request.update(post_params3)
+                render json: @request, include: [:user, :reason]
+            else
+                render json: @request.errors, status: :unprocessable_entity
+            end
         elsif post_params3[:status] == "accepted"
+            @user = User.find(@request.user_id)
+            solde = @user.solde
+            request_days = @request.days
+            result = solde - request_days
 
-           @user = User.where("id = ?" ,  @request.user_id )
-           solde = @user.pluck( :solde ).join(',').to_i
-
-           request_days = (@request.days)
-
-           result = ( solde - request_days ).to_i
-
-           @request.update(post_params3)
-           @user.update(:solde => result)
-
-           render json: @request, include: [  :user, :reason  ]
-
+            if @request.update(post_params3) && @user.update(solde: result)
+                render json: @request, include: [:user, :reason]
+            else
+                render json: { errors: @request.errors.full_messages + @user.errors.full_messages }, status: :unprocessable_entity
+            end
         else
-           render json: @request.errors, statut: :unprocessable_entity
+            render json: @request.errors, status: :unprocessable_entity
         end
-
     end
+
 
 
     # request suprimée par l ' admin
@@ -73,6 +76,59 @@ class RequestController < ApplicationController
         @request = Request.find(params[:id])
         @request.destroy
     end
+
+    def getAllRequestsByCompany
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company
+        users = company.users
+
+        # Fetch requests for the users of the company
+        requests = Request.where(user_id: users.pluck(:id))
+
+
+        render json:  {
+            requests:   requests.paginate(:page => params[:page] )
+        } , include: [ :user, :reason ]
+    end
+
+    def getAllEmployeesByCompany
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company and exclude those with role "0"
+        users = company.users.where.not(role: "0").paginate(page: params[:page])
+
+        # Generate avatar URLs
+        users_with_avatars = users.map do |user|
+          if user.avatar.attached?
+            user.as_json.merge(
+              avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+            )
+          else
+            user
+          end
+        end
+        render json: {
+          employees: users_with_avatars
+        }, include: [:company]
+      end
+
+      def getAllUsersByCompany
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company and exclude those with role "0"
+        users = company.users.where.not(role: "0").paginate(page: params[:page])
+
+        render json: {
+          employees: users
+        }, include: [:company]
+      end
+
+
+
 
     def getRequestsByID
         @requests = Request.where(user_id: params[:user_id]).order('created_at DESC')
@@ -107,7 +163,14 @@ class RequestController < ApplicationController
 
     def getrequestinprogressbyemployee
 
-        @requests = Request.where("status = ?" , status = 0 )
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company
+        users = company.users
+
+        # Fetch requests for the users of the company
+        @requests = Request.where(user_id: users.pluck(:id)).where("status = ?" , status = 0 )
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
@@ -115,8 +178,14 @@ class RequestController < ApplicationController
     end
 
     def getrequestacceptedbyemployee
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
 
-        @requests = Request.where("status = ?" , status = 1 )
+        # Fetch users that belong to the company
+        users = company.users
+
+        # Fetch requests for the users of the company
+        @requests = Request.where(user_id: users.pluck(:id)).where("status = ?" , status = 1 )
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
@@ -124,8 +193,14 @@ class RequestController < ApplicationController
     end
 
     def getrequestrefusedbyemployee
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
 
-        @requests = Request.where("status = ?" , status = 2 )
+        # Fetch users that belong to the company
+        users = company.users
+
+        # Fetch requests for the users of the company
+        @requests = Request.where(user_id: users.pluck(:id)).where("status = ?" , status = 2 )
 
         render json:  {
             requests:   @requests.paginate(:page => params[:page] )
