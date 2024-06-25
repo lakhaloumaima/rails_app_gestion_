@@ -35,6 +35,8 @@ gem 'prawn'
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick'     # For image processing (optional, if you need image handling)
 
+gem 'rack-cors'
+
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 

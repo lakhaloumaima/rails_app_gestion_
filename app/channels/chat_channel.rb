@@ -7,7 +7,7 @@ class ChatChannel < ApplicationCable::Channel
   def create(data)
     @message = Message.new(data['message'])
     if @message.save
-      ActionCable.server.broadcast('chat_channel', { message: @message })
+      ActionCable.server.broadcast('chat_channel', { messages: @message })
     else
       ActionCable.server.broadcast('chat_channel', { errors: @message.errors.full_messages })
     end

@@ -98,7 +98,7 @@ class RequestController < ApplicationController
         company = Company.find(params[:company_id])
 
         # Fetch users that belong to the company and exclude those with role "0"
-        users = company.users.where.not(role: "0").paginate(page: params[:page])
+        users = company.users.where(email_confirmed: true).paginate(page: params[:page])
 
         # Generate avatar URLs
         users_with_avatars = users.map do |user|
@@ -115,6 +115,18 @@ class RequestController < ApplicationController
         }, include: [:company]
       end
 
+      def getAllUsersByCompanyConfirmed
+        # Fetch the company using the company_id parameter
+        company = Company.find(params[:company_id])
+
+        # Fetch users that belong to the company and exclude those with role "0"
+        users = company.users.where(email_confirmed: true).where.not(role: "0").paginate(page: params[:page])
+
+        render json: {
+          employees: users
+        }, include: [:company]
+      end
+
       def getAllUsersByCompany
         # Fetch the company using the company_id parameter
         company = Company.find(params[:company_id])
@@ -126,8 +138,6 @@ class RequestController < ApplicationController
           employees: users
         }, include: [:company]
       end
-
-
 
 
     def getRequestsByID
@@ -147,19 +157,17 @@ class RequestController < ApplicationController
     # request updated by employee
     def updateRequestByEmployee
         @request = Request.find(params[:id])
+        days = (@request.end_date.to_date - @request.start_date.to_date).to_i + 1
 
-        days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
+        if @request.update(post_params4) && @request.update(days: days)
+            byebug
 
-        if @request.update(post_params4)
-
-            @request.update( :days => days )
-
-            render json: @request , include: [ :user, :reason ]
-
+            render json: @request, include: [:user, :reason]
         else
-            render json: @request.errors, statut: :unprocessable_entity
+            render json: @request.errors, status: :unprocessable_entity
         end
     end
+
 
     def getrequestinprogressbyemployee
 
@@ -272,7 +280,7 @@ class RequestController < ApplicationController
     end
 
     def post_params4
-        params.permit( :start_date, :end_date , :reason_id , :description , :certificate )
+        params.permit( :start_date, :end_date , :description , :certificate )
     end
 
 

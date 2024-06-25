@@ -65,6 +65,9 @@ Rails.application.routes.draw do
 
   get 'getAllUsersByCompany/:company_id' , to: 'request#getAllUsersByCompany'
 
+  get 'getAllUsersByCompanyConfirmed/:company_id' , to: 'request#getAllUsersByCompanyConfirmed'
+
+
   get 'getRequestsByIdAccepted/:user_id' , to: 'request#getRequestsByIDAccepted'
 
 

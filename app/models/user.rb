@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_one_attached :avatar, dependent: :destroy
 
   belongs_to :company
-  acts_as_tenant(:company)
+  # acts_as_tenant(:company)
 
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i

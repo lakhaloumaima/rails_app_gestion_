@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
 
     # before_action :set_company
-    set_current_tenant_by_subdomain(:company, :subdomain)
+    # set_current_tenant_by_subdomain(:company, :subdomain)
 
 
     #before_action :authenticate_user!
