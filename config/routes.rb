@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
   delete 'requests/:id' , to: 'request#destroyR'
 
-  delete 'reasons/:id' , to: 'reason#destroyReason'
+  # delete 'reason/:id' , to: 'reason#destroyReason'
 
 
   patch 'requests/:id' , to: 'request#update'
@@ -60,6 +60,8 @@ Rails.application.routes.draw do
   get 'getAllRequestsByCompany/:company_id' , to: 'request#getAllRequestsByCompany'
 
   get 'getAllEmployeesByCompany/:company_id' , to: 'request#getAllEmployeesByCompany'
+
+  get 'getAllEmployeesByCompanyWithoutAdmin/:company_id' , to: 'request#getAllEmployeesByCompanyWithoutAdmin'
 
   get 'getUsersByRole/:role/:company_id' , to: 'employee#getUsersByRole'
 
@@ -116,6 +118,8 @@ Rails.application.routes.draw do
   end
 
   resources :reason
+
+  # delete 'deleteReason/:id' , to: 'reason#destroyReason'
 
   mount ActionCable.server => '/cable'
 

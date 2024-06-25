@@ -33,7 +33,7 @@ class RequestController < ApplicationController
             Notification.create(
               user: admin,
               sender: sender,
-              message: "New request created by #{sender.email} for #{@request.first.reason} ",
+              message: "New request created by #{sender.email} for #{@request.reason} ",
               status: 'unread',
               receiver_type: 'admin',
               receiver_id: admin.id,
@@ -45,7 +45,7 @@ class RequestController < ApplicationController
             Notification.create(
               user: hr,
               sender: sender,
-              message: "New request created by #{sender.email} for #{@request.first.reason} ",
+              message: "New request created by #{sender.email} for #{@request.reason} ",
               status: 'unread',
               receiver_type: 'HR',
               receiver_id: hr.id,
@@ -57,7 +57,7 @@ class RequestController < ApplicationController
             # Broadcast the new request to the notification channel
             ActionCable.server.broadcast("notification_channel", {
                 type: 'new_request',
-                message: "New request created by #{sender.email} for #{@request.first.reason}",
+                message: "New request created by #{sender.email} for #{@request.reason}",
                 request: @request
             })
 
@@ -86,9 +86,9 @@ class RequestController < ApplicationController
             end
         elsif post_params3[:status] == "accepted"
             @user = User.find(@request.user_id)
-            solde = @user.solde
-            request_days = @request.days
-            result = solde - request_days
+            solde = (@user.solde).to_i
+            request_days = @request.days.to_i
+            result = (solde - request_days).to_i
 
             if @request.update(post_params3) && @user.update(solde: result)
                 render json: @request, include: [:user, :reason]
@@ -124,6 +124,28 @@ class RequestController < ApplicationController
         } , include: [ :user, :reason ]
     end
 
+    def getAllEmployeesByCompanyWithoutAdmin
+      # Fetch the company using the company_id parameter
+      company = Company.find(params[:company_id])
+
+      # Fetch users that belong to the company and exclude those with role "0"
+      users = company.users.where(email_confirmed: true).where.not( role: 0 ).paginate(page: params[:page])
+
+      # Generate avatar URLs
+      users_with_avatars = users.map do |user|
+        if user.avatar.attached?
+          user.as_json.merge(
+            avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+          )
+        else
+          user
+        end
+      end
+      render json: {
+        employees: users_with_avatars
+      }, include: [:company]
+  end
+
     def getAllEmployeesByCompany
         # Fetch the company using the company_id parameter
         company = Company.find(params[:company_id])
@@ -144,7 +166,7 @@ class RequestController < ApplicationController
         render json: {
           employees: users_with_avatars
         }, include: [:company]
-      end
+    end
 
       def getAllUsersByCompanyConfirmed
         # Fetch the company using the company_id parameter

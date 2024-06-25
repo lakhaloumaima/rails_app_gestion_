@@ -36,7 +36,7 @@ class ReasonController < ApplicationController
 
         @reason = Reason.find(params[:id])
 
-        if @reason.update(post_params2)
+        if @reason.update(post_params)
 
           render json: @reason
 
@@ -48,10 +48,10 @@ class ReasonController < ApplicationController
 
 
     # reason suprimée par l ' admin
-    def destroyReason
+    def destroy
         @reason = Reason.find(params[:id])
-        @requests = Request.where( reason_id: id )
-        @requests.destroy
+        @requests = Request.where( reason_id: @reason.id )
+        @requests.destroy_all
         @reason.destroy
     end
 
@@ -63,11 +63,7 @@ class ReasonController < ApplicationController
     private
 
     def post_params
-      params.permit(  :name, :description )
-    end
-
-    def post_params2
-      params.permit( :name, :description )
+      params.permit(  :name )
     end
 
 
