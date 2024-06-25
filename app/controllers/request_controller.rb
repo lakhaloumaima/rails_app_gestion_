@@ -20,21 +20,52 @@ class RequestController < ApplicationController
 
     # request crée par l ' employee
     def create
-
         @request = Request.new(post_params)
 
-        days= ( (@request.end_date.to_date - @request.start_date.to_date).to_i) + 1
-        @request.update( :days => days )
-        # byebug
-
         if @request.save
+          sender = @request.user
+          company = sender.company
 
-            render json: @request , include: [ :user, :reason ]
+          admin_users = company.users.where(role: 'admin')
+          hr_users = company.users.where(role: 'HR')
 
+          admin_users.each do |admin|
+            Notification.create(
+              user: admin,
+              sender: sender,
+              message: "New request created by #{sender.email} for #{@request.first.reason} ",
+              status: 'unread',
+              receiver_type: 'admin',
+              receiver_id: admin.id,
+              company_id: company.id
+            )
+          end
+
+          hr_users.each do |hr|
+            Notification.create(
+              user: hr,
+              sender: sender,
+              message: "New request created by #{sender.email} for #{@request.first.reason} ",
+              status: 'unread',
+              receiver_type: 'HR',
+              receiver_id: hr.id,
+              company_id: company.id
+            )
+          end
+
+
+            # Broadcast the new request to the notification channel
+            ActionCable.server.broadcast("notification_channel", {
+                type: 'new_request',
+                message: "New request created by #{sender.email} for #{@request.first.reason}",
+                request: @request
+            })
+
+          render json: @request, include: [:user, :reason], status: :created
         else
-            render json: @request.errors
+          render json: @request.errors, status: :unprocessable_entity
         end
-    end
+      end
 
     # request cherchée par l ' admin par ID :
     def show
@@ -271,8 +302,7 @@ class RequestController < ApplicationController
     # end
 
     def post_params
-        params.permit(  :start_date, :end_date, :reason_id , :description , :user_id , :certificate )
-
+        params.permit(:start_date, :end_date, :reason_id, :description, :user_id, :certificate)
     end
 
     def post_params3

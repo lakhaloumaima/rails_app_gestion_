@@ -70,6 +70,8 @@ Rails.application.routes.draw do
 
   get 'getRequestsByIdAccepted/:user_id' , to: 'request#getRequestsByIDAccepted'
 
+  # resources :notifications
+  get 'notifications/:id' , to: 'notifications#index'
 
  # ##################################################  employees  ###############################################
 
