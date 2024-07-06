@@ -13,7 +13,7 @@ class Users::SessionsController < Devise::SessionsController
         status: 200,
         subdomain: current_user.company.subdomain,
         redirect_url: subdomain_url(current_user.company.subdomain)
-      }, status: :ok
+      }, include: [:company] , status: :ok
     else
       render json: { status: 401 }
     end

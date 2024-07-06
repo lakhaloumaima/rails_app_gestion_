@@ -73,7 +73,7 @@ class EmployeeController < ApplicationController
     # @user.avatar.attach(io: File.open(Rails.root.join('public', 'logo2.jpeg')), filename: 'logo2.jpeg')
 
     av =  @user.avatar.attached? ? url_for( @user.avatar) : nil
-
+    @user.company.update(company_params) if params[:name].present? || params[:subdomain].present? || params[:solde].present?
 
     if @user.update(post_paramsEmployee )
 
@@ -83,12 +83,22 @@ class EmployeeController < ApplicationController
         id: @user.id  ,
         user: @user ,
         avv: av
-      }
+      }, include: [:company]
 
     else
       render json: @user.errors, statut: :unprocessable_entity
     end
   end
+
+  # def updateuser
+  #   if @user.update(user_params)
+  #     update_company if @user.company.present?
+
+  #     render json: { user: @user, avatar_url: avatar_url(@user) }, status: :ok
+  #   else
+  #     render json: @user.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   #liste des employees consultée par l ' admin
   def getAllEmployees
@@ -221,6 +231,14 @@ class EmployeeController < ApplicationController
 
   def post_paramsEmployee
     params.permit( :email, :last_name, :first_name, :address, :phone, :cin , :password )
+  end
+
+  # def update_company
+  #   @user.company.update(company_params)
+  # end
+
+  def company_params
+    params.permit(:name, :subdomain,  :solde )
   end
 
   def post_params1

@@ -20,52 +20,57 @@ class RequestController < ApplicationController
 
     # request crée par l ' employee
     def create
-        @request = Request.new(post_params)
+      @request = Request.new(post_params)
 
-        if @request.save
-          sender = @request.user
-          company = sender.company
+      # Calculate days based on start_date and end_date
+      days = (@request.end_date.to_date - @request.start_date.to_date).to_i + 1
+      @request.days = days
 
-          admin_users = company.users.where(role: 'admin')
-          hr_users = company.users.where(role: 'HR')
+      if @request.save
+        sender = @request.user
+        company = sender.company
+        reason = @request.reason
 
-          admin_users.each do |admin|
-            Notification.create(
-              user: admin,
-              sender: sender,
-              message: "New request created by #{sender.email} for #{@request.reason} ",
-              status: 'unread',
-              receiver_type: 'admin',
-              receiver_id: admin.id,
-              company_id: company.id
-            )
-          end
+        admin_users = company.users.where(role: 'admin')
+        hr_users = company.users.where(role: 'HR')
 
-          hr_users.each do |hr|
-            Notification.create(
-              user: hr,
-              sender: sender,
-              message: "New request created by #{sender.email} for #{@request.reason} ",
-              status: 'unread',
-              receiver_type: 'HR',
-              receiver_id: hr.id,
-              company_id: company.id
-            )
-          end
-
-
-            # Broadcast the new request to the notification channel
-            ActionCable.server.broadcast("notification_channel", {
-                type: 'new_request',
-                message: "New request created by #{sender.email} for #{@request.reason}",
-                request: @request
-            })
-
-          render json: @request, include: [:user, :reason], status: :created
-        else
-          render json: @request.errors, status: :unprocessable_entity
+        admin_users.each do |admin|
+          Notification.create(
+            user: admin,
+            sender: sender,
+            message: "New request created by #{sender.email} for #{reason.name}",
+            status: 'unread',
+            receiver_type: 'admin',
+            receiver_id: admin.id,
+            company_id: company.id
+          )
         end
+
+        hr_users.each do |hr|
+          Notification.create(
+            user: hr,
+            sender: sender,
+            message: "New request created by #{sender.email} for #{reason.name}",
+            status: 'unread',
+            receiver_type: 'HR',
+            receiver_id: hr.id,
+            company_id: company.id
+          )
+        end
+
+        # Broadcast the new request to the notification channel
+        ActionCable.server.broadcast("notification_channel", {
+          type: 'new_request',
+          message: "New request created by #{sender.email} for #{sender.company.name}",
+          request: @request
+        })
+
+        render json: @request, include: [:user, :reason], status: :created
+      else
+        render json: @request.errors, status: :unprocessable_entity
       end
+    end
+
 
     # request cherchée par l ' admin par ID :
     def show
@@ -146,6 +151,53 @@ class RequestController < ApplicationController
       }, include: [:company]
   end
 
+
+  def getRequestsByStatus
+    # Fetch the company using the company_id parameter
+    company = Company.find(params[:company_id])
+
+    # Fetch users that belong to the company with the specified role
+    requests = Request.where(status: params[:status]).paginate(page: params[:page])
+
+    # Generate avatar URLs
+    # users_with_avatars = users.map do |user|
+    #   if user.avatar.attached?
+    #     user.as_json.merge(
+    #       avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+    #       )
+    #   else
+    #     user
+    #   end
+    # end
+
+    render json: {
+      requests: requests
+    }, include: [:user, :reason ]
+  end
+
+  def getRequestsByIDByStatus
+    # Fetch the company using the company_id parameter
+    company = Company.find(params[:company_id])
+
+    # Fetch users that belong to the company with the specified role
+    requests = Request.where(user_id: params[:id]).where(status: params[:status]).paginate(page: params[:page])
+
+    # Generate avatar URLs
+    # users_with_avatars = users.map do |user|
+    #   if user.avatar.attached?
+    #     user.as_json.merge(
+    #       avatar_url: user.avatar.attached? ? url_for(user.avatar) : nil
+    #       )
+    #   else
+    #     user
+    #   end
+    # end
+
+    render json: {
+      requests: requests
+    }, include: [:user, :reason ]
+  end
+
     def getAllEmployeesByCompany
         # Fetch the company using the company_id parameter
         company = Company.find(params[:company_id])
@@ -207,13 +259,31 @@ class RequestController < ApplicationController
         } , include: [ :user, :reason ]
     end
 
+    # for admin tasks
+    def updateRequestStatus
+      @request = Request.find(params[:id])
+      if params[:status].present?
+        @user = User.find(@request.user_id)
+        solde = @user.solde.to_i
+        request_days = @request.days.to_i
+        result = solde - request_days
+
+        if @request.update(post_params_update) && (params[:status] == 'accepted' ? @user.update(solde: result) : true)
+          render json: { requests: @request }, include: [:user, :reason]
+        else
+          render json: { errors: @request.errors.full_messages + @user.errors.full_messages }, status: :unprocessable_entity
+        end
+      else
+        render json: { error: 'Status cannot be null' }, status: :unprocessable_entity
+      end
+    end
+
     # request updated by employee
     def updateRequestByEmployee
         @request = Request.find(params[:id])
         days = (@request.end_date.to_date - @request.start_date.to_date).to_i + 1
 
         if @request.update(post_params4) && @request.update(days: days)
-            byebug
 
             render json: @request, include: [:user, :reason]
         else
@@ -332,8 +402,10 @@ class RequestController < ApplicationController
     end
 
     def post_params4
-        params.permit( :start_date, :end_date , :description , :certificate )
+        params.permit( :start_date, :end_date , :description , :certificate, :reason_id )
     end
 
-
+    def post_params_update
+      params.permit( :status )
+  end
 end

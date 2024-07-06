@@ -65,6 +65,10 @@ Rails.application.routes.draw do
 
   get 'getUsersByRole/:role/:company_id' , to: 'employee#getUsersByRole'
 
+  get 'getRequestsByStatus/:status/:company_id' , to: 'request#getRequestsByStatus'
+
+  get 'getRequestsByIDByStatus/:status/:company_id/:id' , to: 'request#getRequestsByIDByStatus'
+
   get 'getAllUsersByCompany/:company_id' , to: 'request#getAllUsersByCompany'
 
   get 'getAllUsersByCompanyConfirmed/:company_id' , to: 'request#getAllUsersByCompanyConfirmed'
@@ -82,6 +86,8 @@ Rails.application.routes.draw do
   patch 'updateimguser/:id' , to: 'employee#updateimageuser'
 
   patch 'updateuser/:id' , to: 'employee#updateuser'
+
+  patch 'updateRequestStatus/:id' , to: 'request#updateRequestStatus'
 
   get 'employees' , to: 'employee#getAllEmployees'
 
