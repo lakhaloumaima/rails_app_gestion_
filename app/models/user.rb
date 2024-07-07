@@ -9,6 +9,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
+  validates_length_of :cin, is: 8
+  validates_length_of :phone, is: 8
   validates :company_id, presence: true
 
   before_create :confirmation_token

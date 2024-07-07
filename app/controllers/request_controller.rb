@@ -82,21 +82,27 @@ class RequestController < ApplicationController
     # demande modifiée par l ' admin
     def update
         @request = Request.find(params[:id])
+        @user = User.find(@request.user_id)
 
         if post_params3[:status] == "in_progress" || post_params3[:status] == "refused"
             if @request.update(post_params3)
-                render json: @request, include: [:user, :reason]
+              if post_params3[:status] == "refused"
+                create_notification(@request, @user, 'refused')
+              end
+              render json: @request, include: [:user, :reason]
             else
                 render json: @request.errors, status: :unprocessable_entity
             end
         elsif post_params3[:status] == "accepted"
-            @user = User.find(@request.user_id)
             solde = (@user.solde).to_i
             request_days = @request.days.to_i
             result = (solde - request_days).to_i
 
             if @request.update(post_params3) && @user.update(solde: result)
-                render json: @request, include: [:user, :reason]
+              if post_params3[:status] == "accepted"
+                create_notification(@request, @user, 'accepted')
+              end
+              render json: @request, include: [:user, :reason]
             else
                 render json: { errors: @request.errors.full_messages + @user.errors.full_messages }, status: :unprocessable_entity
             end
@@ -155,9 +161,10 @@ class RequestController < ApplicationController
   def getRequestsByStatus
     # Fetch the company using the company_id parameter
     company = Company.find(params[:company_id])
+    users = company.users
 
     # Fetch users that belong to the company with the specified role
-    requests = Request.where(status: params[:status]).paginate(page: params[:page])
+    requests = Request.where(status: params[:status]).where(user_id: users.pluck(:id)).paginate(page: params[:page])
 
     # Generate avatar URLs
     # users_with_avatars = users.map do |user|
@@ -267,8 +274,15 @@ class RequestController < ApplicationController
         solde = @user.solde.to_i
         request_days = @request.days.to_i
         result = solde - request_days
+        if post_params3[:status] == "refused"
+          create_notification(@request, @user, 'refused')
+        end
 
         if @request.update(post_params_update) && (params[:status] == 'accepted' ? @user.update(solde: result) : true)
+          if params[:status] == 'accepted'
+            create_notification(@request, @user, 'accepted')
+          end
+
           render json: { requests: @request }, include: [:user, :reason]
         else
           render json: { errors: @request.errors.full_messages + @user.errors.full_messages }, status: :unprocessable_entity
@@ -408,4 +422,29 @@ class RequestController < ApplicationController
     def post_params_update
       params.permit( :status )
   end
+
+  def create_notification(request, user, status)
+    message = if status == 'accepted'
+      "Your request for #{request.reason.name} has been accepted."
+    else
+      "Your request for #{request.reason.name} has been refused."
+    end
+
+    Notification.create(
+      user: user,
+      sender: user,
+      message: message,
+      status: 'unread',
+      receiver_type: 'employee',
+      receiver_id: request.user.id,
+      company_id: user.company.id
+    )
+    ActionCable.server.broadcast("notification_channel", {
+      type: 'request_status_update',
+      message: message,
+      request: request
+    })
+
+  end
+
 end
